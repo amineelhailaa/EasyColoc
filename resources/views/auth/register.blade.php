@@ -1,4 +1,4 @@
-@php($title = 'Login — NASS SPLIT')
+@php($title = 'Sign Up — NASS SPLIT')
 
 @extends('layouts.guest')
 
@@ -10,10 +10,15 @@
                      alt="logo" width="100" height="100" loading="lazy" />
             </a>
         </div>
-        <h1 class="mb-2 text-center text-4xl font-semibold  font-cash2 text-cerulean-700 ">Sign In</h1>
-        <p class="mb-8 text-center text-sm text-cerulean-700 font-bold"> save your friendship and let us split it for you guys !</p>
-        <form method="post" action="">
+        <h1 class=" text-center text-4xl font-semibold  font-cash2 text-cerulean-700 ">Create New Account</h1>
+        <p class="text-center text-sm text-cerulean-700 font-bold"> save your friendship <br>and let us split it for you guys !</p>
+        <form>
+            <div class="mb-4 mt-4">
+                <x-form.input label="Full Name" name="fullName" type="text" id="fullName" placeholder="FullName"
+                ></x-form.input>
+            </div>
             <div class="mb-4">
+
                 <x-form.input label="Email" name="email" type="email" id="email" placeholder="name@example.com" autocomplete="email"
                        class="" ></x-form.input>
             </div>
@@ -21,11 +26,14 @@
                 <x-form.input label="Password" name="password" type="password" id="password" placeholder="Password" autocomplete="new-password"
                 ></x-form.input>
             </div>
-            <div class="mb-4 flex items-center justify-between">
-                <x-form.checkbox name="remember" label="Remember me" />
-                <a href="#" class="text-sm text-gray-400 hover:text-indigo-500">Forgot Password?</a>
+            <div class="mb-4">
+                <x-form.input label="Confirm Password" name="password_confirmation" type="password" id="confirm_password" placeholder="Confirm Password" autocomplete="new-password"
+                ></x-form.input>
             </div>
 
+            <div class="mb-2 text-right">
+                <a href="{{route('login')}}" class="text-sm text-gray-400 hover:text-indigo-500">Already has an Account?</a>
+            </div>
             <x-button variant="primary" class="h-14">Create account</x-button>
         </form>
 

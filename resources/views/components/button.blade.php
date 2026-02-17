@@ -1,8 +1,8 @@
 @props(['variant' => 'primary','type'=>'submit','loading'=>false,'disabled'=>false])
 
 @php
-    $base = 'inline-flex items-center justify-center gap-2 rounded-2xl font-semibold transition active:scale-[0.99]';
-    $size = 'h-14 w-full px-4';
+    $base = 'cursor-pointer inline-flex items-center justify-center gap-2 rounded-2xl font-semibold transition active:scale-[0.99]';
+    $size = 'h-14 w-full px-2';
 
     $map = [
       'primary' => 'bg-cerulean-600 text-white hover:bg-cerulean-700',

@@ -9,9 +9,7 @@
 
 <body class="h-full bg-cerulean-50 text-cerulean-900">
 <main class="min-h-screen flex items-center justify-center px-5 py-10">
-    <div class="w-full max-w-sm space-y-6">
-        {{ $slot }}
-    </div>
+        @yield('content')
 </main>
 </body>
 </html>
