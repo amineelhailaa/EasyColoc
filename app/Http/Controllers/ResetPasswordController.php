@@ -17,8 +17,15 @@ class ResetPasswordController extends Controller
 
     public function resetPassword(Request $request){
         $request->validate(['email' => 'required|email']);
-        Password::sendResetLink($request->only('email'));
-        return view('auth.checkMail');
+        $situation = Password::sendResetLink($request->only('email'));
+
+        if ($situation === Password::RESET_LINK_SENT) {
+            return view('auth.checkMail');
+        }
+
+        return back()
+            ->withInput($request->only('email')) //to keep the email like php whenn we used to fill errors in data
+            ->withErrors(['email' => __($situation)]);//make it human
     }
 
 
