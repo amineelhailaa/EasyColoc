@@ -10,7 +10,7 @@
                      alt="logo" width="100" height="100" loading="lazy" />
             </a>
         </div>
-        <h1 class="mb-2 text-center text-4xl font-semibold  font-cash2 text-cerulean-700 ">Forgot Password</h1>
+        <h1 class="mb-2 text-center text-4xl font-semibold  font-cash2 text-cerulean-700 ">Forgot Password ?</h1>
         <p class="mb-8 text-center text-sm text-cerulean-700 font-bold">Enter your email and we will send you a reset link.</p>
         <form method="post" action="">
             <div class="mb-4">

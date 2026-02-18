@@ -23,7 +23,7 @@
             </div>
             <div class="mb-4 flex items-center justify-between">
                 <x-form.checkbox name="remember" label="Remember me" />
-                <a href="#" class="text-sm text-gray-400 hover:text-indigo-500">Forgot Password?</a>
+                <a href="{{route('reset_password')}}" class="text-sm text-gray-400 hover:text-indigo-500">Forgot Password?</a>
             </div>
 
             <x-button variant="primary" class="h-14">Create account</x-button>

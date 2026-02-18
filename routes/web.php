@@ -21,11 +21,9 @@ Route::middleware('guest')->group(function () {
     //login
     Route::get('/login', [AuthentificationController::class,'index'])->name('login');
     Route::post('/login',[ AuthentificationController::class,'login']);
-
     //signup
     Route::get('/register', [RegisterController::class,'index'])->name('register');
     Route::post('/register',[ RegisterController::class,'register']);
-
     //forget password
     Route::get('/reset_password', [ResetPasswordController::class,'index'])->name('reset_password');
 });

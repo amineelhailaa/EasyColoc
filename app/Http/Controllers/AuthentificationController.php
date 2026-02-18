@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthentificationController extends Controller
 {
@@ -11,7 +13,16 @@ class AuthentificationController extends Controller
         return view('auth.login');
     }
 
-    public function login(){}
-    public function logout(){}
+    public function login(LoginRequest $request){
+        Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember());
+        $request->session()->regenerate();
+        return redirect()->intended(route('home'));
+    }
+    public function logout(Request $request){
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');
+    }
 
 }
