@@ -8,6 +8,7 @@
 </head>
 
 <body class="h-full bg-cerulean-50 text-cerulean-900">
+<x-navbar></x-navbar>
 <main class="min-h-screen flex items-center justify-center px-5 py-10">
         @yield('content')
 </main>
