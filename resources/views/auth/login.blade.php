@@ -12,7 +12,7 @@
         </div>
         <h1 class="mb-2 text-center text-4xl font-semibold  font-cash2 text-cerulean-700 ">Sign In</h1>
         <p class="mb-8 text-center text-sm text-cerulean-700 font-bold"> save your friendship and let us split it for you guys !</p>
-        <form method="post" action="">
+        <form method="post" action="{{route('login')}}">
             <div class="mb-4">
                 <x-form.input label="Email" name="email" type="email" id="email" placeholder="name@example.com" autocomplete="email"
                        class="" ></x-form.input>
@@ -45,7 +45,7 @@
             Github
         </x-button>
 
-        <x-button variant="secondary" type="button"
+        <x-button variant="secondary" type="submit"
                 class="h-12! mt-2 flex py-2 w-full  items-center justify-center gap-2 rounded bg-gray-800 text-gray-300 hover:bg-cerulean-700 ">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20" height="20">
                 <path fill="#FFC107"

@@ -16,12 +16,13 @@ class RegisterController extends Controller
     }
 
     public function create(RegisterFormRequest $request){
+
       $user =  User::create([
-            'name' => $request->fullname,
+            'name' => $request->fullName,
             'email' => $request->email,
             'password'=>Hash::make($request->password)
         ]);
     Auth::login($user);
-    return redirect()->route('home');
+    return redirect()->route('login');
     }
 }

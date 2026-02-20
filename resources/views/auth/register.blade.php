@@ -12,7 +12,8 @@
         </div>
         <h1 class=" text-center text-4xl font-semibold  font-cash2 text-cerulean-700 ">Create New Account</h1>
         <p class="text-center text-sm text-cerulean-700 font-bold"> save your friendship <br>and let us split it for you guys !</p>
-        <form>
+        <form action="{{route('register')}}" method="post">
+            @csrf
             <div class="mb-4 mt-4">
                 <x-form.input label="Full Name" name="fullName" type="text" id="fullName" placeholder="FullName"
                 ></x-form.input>
@@ -53,7 +54,7 @@
             Github
         </x-button>
 
-        <x-button variant="secondary" type="button"
+        <x-button variant="secondary" type="submit"
                 class="h-12! mt-2 flex py-2 w-full  items-center justify-center gap-2 rounded bg-gray-800 text-gray-300 hover:bg-cerulean-700 ">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20" height="20">
                 <path fill="#FFC107"

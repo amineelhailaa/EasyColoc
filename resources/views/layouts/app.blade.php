@@ -8,6 +8,7 @@
 </head>
 
 <body class="h-full bg-cerulean-50 text-cerulean-900">
+<x-navbar></x-navbar>
 <div class="min-h-screen pb-20">
     {{-- Top bar --}}
     {{ $topbar ?? '' }}
