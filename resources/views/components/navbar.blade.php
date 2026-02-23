@@ -4,8 +4,8 @@
     <nav class="mx-auto w-full max-w-8xl px-4 py-3 md:px-6 " >
         <div class="flex items-center justify-between">
             <a href="{{ url('/') }}" class="inline-flex items-center gap-2">
-                <img alt="logo" src="{{asset('storage/images/nass_split_logo.png')}}" height="50" width="50" />
-                <span class="font-cash2 text-2xl text-cerulean-800 hidden md:block ">Nass Split</span>
+                <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-cerulean-700 text-sm font-bold text-white">NS</span>
+                <span class="font-cash2 text-2xl text-cerulean-800 hidden md:block ">EasyColoc</span>
             </a>
             @auth
                 <div class="flex w-full justify-evenly md:px-[10%] ">
@@ -79,4 +79,3 @@
 
     });
 </script>
-
