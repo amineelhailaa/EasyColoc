@@ -34,27 +34,12 @@
                 required
             />
 
-            <div>
-                <label for="profile_avatar" class="block text-xs font-medium text-cerulean-800">Avatar (optional)</label>
-                <div class="mt-2 flex items-center gap-4">
-                    <img
-                        id="profile-avatar-preview"
-                        src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : '' }}"
-                        data-default-src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : '' }}"
-                        alt="Avatar preview"
-                        class="{{ auth()->user()->avatar ? '' : 'hidden' }} h-16 w-16 rounded-2xl border border-cerulean-200 object-cover"
-                    />
-
-                    <input
-                        id="profile_avatar"
-                        name="avatar"
-                        type="file"
-                        accept="image/*"
-                        class="block w-full rounded-2xl border border-cerulean-200 bg-white px-4 py-3 text-sm text-cerulean-700 file:mr-4 file:rounded-xl file:border-0 file:bg-cerulean-100 file:px-3 file:py-2 file:font-semibold file:text-cerulean-700 hover:file:bg-cerulean-200"
-                    />
-                </div>
-                <x-form.error name="avatar" />
-            </div>
+            <x-form.avatar-upload
+                name="avatar"
+                id="profile_avatar"
+                label="Avatar (optional)"
+                :preview-src="auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : ''"
+            />
 
             <div class="pt-2">
                 <x-button variant="primary" class="h-12">Save Changes</x-button>
@@ -94,25 +79,4 @@
         </div>
     </div>
 
-    <script>
-        (() => {
-            const input = document.getElementById('profile_avatar');
-            const preview = document.getElementById('profile-avatar-preview');
-            if (!input || !preview) return;
-
-            input.addEventListener('change', () => {
-                const file = input.files && input.files[0];
-                if (!file || !file.type.startsWith('image/')) {
-                    const defaultSrc = preview.dataset.defaultSrc || '';
-                    preview.src = defaultSrc;
-                    preview.classList.toggle('hidden', !defaultSrc);
-                    return;
-                }
-
-                const objectUrl = URL.createObjectURL(file);
-                preview.src = objectUrl;
-                preview.classList.remove('hidden');
-            });
-        })();
-    </script>
 @endsection

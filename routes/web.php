@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthentificationController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ColocationController;
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
@@ -40,4 +41,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile',[ProfileController::class,'index'])->name('profile.view');
     Route::put('/profile',[ProfileController::class,'update'])->name('profile.update');
     Route::put('/profile/pwd',[ProfileController::class,'updatePassword'])->name('profile.password');
+    Route::resource('colocation',ColocationController::class);
 });
