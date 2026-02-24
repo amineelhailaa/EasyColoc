@@ -10,5 +10,11 @@ document.addEventListener('click', (e) => {
     if (!btn) return;
     const input = document.querySelector(btn.getAttribute('data-toggle-password'));
     if (!input) return;
-    input.type = input.type === 'password' ? 'text' : 'password';
+
+    const isPassword = input.type === 'password';
+    input.type = isPassword ? 'text' : 'password';
+
+    const showLabel = btn.getAttribute('data-show-label') || 'Show';
+    const hideLabel = btn.getAttribute('data-hide-label') || 'Hide';
+    btn.textContent = isPassword ? hideLabel : showLabel;
 });

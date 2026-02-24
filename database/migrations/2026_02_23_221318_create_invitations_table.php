@@ -11,18 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('memberships', function (Blueprint $table) {
+        Schema::create('invitations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('colocation_id');
-            $table->timestamp('left_at')->nullable();
-            $table->bigInteger('balance')->default(0);
-            $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->enum('role',['owner','member'])->default('member');
-            $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('colocation_id')->references('id')->on('colocations');
+            $table->string('email');
+            $table->string('token');
+            $table->enum('status',['live','expired'])->default('live');
             $table->timestamps();
-            $table->unique(['user_id', 'colocation_id']);
         });
     }
 
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('memberships');
+        Schema::dropIfExists('invitations');
     }
 };

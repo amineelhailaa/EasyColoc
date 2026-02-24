@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PasswordUpdateRequest;
+use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Hash;
 class ProfileController extends Controller
 {
     /**
@@ -12,6 +14,7 @@ class ProfileController extends Controller
     public function index()
     {
         //
+        return view('profile.update',['user'=>auth()->user()]);
     }
 
     /**
@@ -49,9 +52,19 @@ class ProfileController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ProfileUpdateRequest $request)
     {
-        //
+//        dd($request);
+        $data = ['name' => $request->name, 'email' => $request->email];
+        if ($request->hasFile('avatar')) {
+            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');        }
+        auth()->user()->update($data);
+        return redirect()->route('profile.view');
+    }
+
+    public function updatePassword(PasswordUpdateRequest $request){
+        auth()->user()->update(['password' => Hash::make($request->password)]);
+        return redirect()->route('profile.view');
     }
 
     /**

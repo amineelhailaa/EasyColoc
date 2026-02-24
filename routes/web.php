@@ -4,6 +4,7 @@ use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthentificationController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ProfileController;
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
@@ -33,3 +34,10 @@ Route::middleware('guest')->group(function () {
 
 Route::view('/test','globalDashboard');
 route::post('/logout',[ AuthentificationController::class,'logout'])->name('logout');
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile',[ProfileController::class,'index'])->name('profile.view');
+    Route::put('/profile',[ProfileController::class,'update'])->name('profile.update');
+    Route::put('/profile/pwd',[ProfileController::class,'updatePassword'])->name('profile.password');
+});

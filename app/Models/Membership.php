@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Membership extends Model
 {
+    protected $fillable = [
+        'user_id','colocation_id','status','role','balance','left_at'
+    ];
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

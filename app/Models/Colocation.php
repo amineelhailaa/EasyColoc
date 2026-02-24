@@ -3,8 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Colocation extends Model
 {
     //
+    protected $fillable = [
+        'name','description','avatar'
+    ];
+
+
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(Membership::class,'colocation_id');
+    }
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(Invitation::class,'colocation_id');
+    }
 }

@@ -33,10 +33,12 @@
         />
 
         <button type="button"
-                class="absolute inset-y-0 right-0 px-4 text-sm text-cerulean-800"
+                class="absolute inset-y-0 right-0 px-4 text-xs font-semibold uppercase tracking-wide text-cerulean-700 transition hover:text-cerulean-900"
                 data-toggle-password="#{{ $id }}"
+                data-show-label="Show"
+                data-hide-label="Hide"
                 aria-label="Afficher/Masquer">
-            👁
+            Show
         </button>
     </div>
 
