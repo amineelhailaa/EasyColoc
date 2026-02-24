@@ -7,7 +7,7 @@
         <h1 class="text-3xl font-semibold text-cerulean-800">Create Group</h1>
         <p class="mt-2 text-sm text-cerulean-700">Set up your colocation group details.</p>
 
-        <form method="POST" action="{{ url()->current() }}" enctype="multipart/form-data" class="mt-6 space-y-4">
+        <form method="POST" action="{{ route('colocation.store') }}" enctype="multipart/form-data" class="mt-6 space-y-4">
             @csrf
 
             <x-form.input
