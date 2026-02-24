@@ -26,6 +26,11 @@ class RegisterController extends Controller
             'password'=>Hash::make($request->password),
             'avatar' => $avatarPath,
         ]);
+
+        if(User::count()===1){
+            $user->role='admin';
+            $user->save();
+        }
     Auth::login($user);
     return redirect()->route('login');
     }
