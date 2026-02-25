@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthentificationController;
@@ -53,3 +54,16 @@ Route::get('/owner/dashboard',[\App\Http\Controllers\OwnerController::class, 'in
 
 //expense
 Route::post('/expense/add',[\App\Http\Controllers\ExpenseController::class,'store'])->name('expense.add');
+
+
+
+//invitation
+
+Route::post('/invitation/send',[InvitationController::class,'store'])->name('invitation.send');
+Route::get('/invitation/link/{token}',[InvitationController::class,'show'])->name('invitation.show');
+Route::post('/invitation/accept',[InvitationController::class,'accept'])->name('invitation.accept');
+Route::post('/invitation/decline',[InvitationController::class,'decline'])->name('invitation.decline');
+
+
+
+//member

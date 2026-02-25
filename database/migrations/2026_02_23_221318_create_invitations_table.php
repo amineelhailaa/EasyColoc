@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign('colocation_id')->references('id')->on('colocations');
             $table->string('email');
             $table->string('token');
-            $table->enum('status',['live','expired'])->default('live');
+            $table->enum('status',['pending','accepted','declined'])->default('pending');
             $table->timestamps();
         });
     }

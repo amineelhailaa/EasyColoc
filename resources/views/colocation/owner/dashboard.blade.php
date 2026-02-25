@@ -7,7 +7,7 @@
         <section class="rounded-3xl border border-cerulean-200 bg-white p-6 shadow-sm md:p-8">
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cerulean-500">{{ $colocation->$title }}</p>
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cerulean-500">{{ $colocation->title }}</p>
                     <h1 class="mt-2 text-3xl font-semibold text-cerulean-800 md:text-4xl">Group Dashboard</h1>
                     <p class="mt-2 max-w-3xl text-sm text-cerulean-700">
                         Manage your group from one page: members, categories, and expenses.
@@ -112,6 +112,7 @@
 
                         <button
                             type="button"
+                            data-open-modal="invite-member-modal"
                             class="rounded-xl border border-cerulean-300 bg-cerulean-50 px-4 py-2 text-sm font-semibold text-cerulean-700 hover:bg-cerulean-100"
                         >
                             Invite Member
@@ -285,6 +286,36 @@
                 <div class="sm:col-span-2 flex justify-end gap-2 pt-2">
                     <button type="button" data-close-modal class="rounded-xl border border-cerulean-300 px-4 py-2 text-sm font-semibold text-cerulean-700 hover:bg-cerulean-50">Cancel</button>
                     <button type="submit" class="rounded-xl bg-cerulean-700 px-4 py-2 text-sm font-semibold text-white hover:bg-cerulean-800">Add Expense</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="invite-member-modal" class="fixed hidden inset-0 z-50 items-center justify-center bg-cerulean-900/50 p-4">
+        <div class="w-full max-w-md rounded-2xl border border-cerulean-200 bg-white p-5 shadow-xl">
+            <div class="flex items-start justify-between gap-3">
+                <div>
+                    <h3 class="text-lg font-semibold text-cerulean-800">Invite Member</h3>
+                    <p class="mt-1 text-xs text-cerulean-600">Send an invitation email to join this group.</p>
+                </div>
+                <button type="button" data-close-modal class="rounded-lg p-2 text-cerulean-700 hover:bg-cerulean-100">X</button>
+            </div>
+
+            <form class="mt-4 space-y-4" action="{{ route('invitation.send') }}" method="post">
+                @csrf
+                <x-form.input
+                    id="invite-email"
+                    name="email"
+                    type="email"
+                    label="Member Email"
+                    placeholder="name@example.com"
+                    autocomplete="email"
+                    required
+                />
+
+                <div class="flex justify-end gap-2 pt-1">
+                    <button type="button" data-close-modal class="rounded-xl border border-cerulean-300 px-4 py-2 text-sm font-semibold text-cerulean-700 hover:bg-cerulean-50">Cancel</button>
+                    <button type="submit" class="rounded-xl bg-cerulean-700 px-4 py-2 text-sm font-semibold text-white hover:bg-cerulean-800">Send Invite</button>
                 </div>
             </form>
         </div>

@@ -17,7 +17,7 @@ class ColocationController extends Controller
         if (auth()->user()->membership?->colocation == null){ //adding? to avoid read properit on nul error
             return redirect()->route('colocation.create');
         }
-        return view('colocation.owner.dashboard');
+//        return view('colocation.owner.dashboard');
     }
 
     /**
