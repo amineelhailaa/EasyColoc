@@ -7,7 +7,7 @@
         <section class="rounded-3xl border border-cerulean-200 bg-white p-6 shadow-sm md:p-8">
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cerulean-500">Group Owner Space</p>
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cerulean-500">{{ $colocation->$title }}</p>
                     <h1 class="mt-2 text-3xl font-semibold text-cerulean-800 md:text-4xl">Group Dashboard</h1>
                     <p class="mt-2 max-w-3xl text-sm text-cerulean-700">
                         Manage your group from one page: members, categories, and expenses.
@@ -31,25 +31,25 @@
                 <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <article class="rounded-2xl border border-cerulean-200 bg-white p-5 shadow-sm">
                         <p class="text-xs font-semibold uppercase tracking-[0.16em] text-cerulean-600">Members</p>
-                        <p class="mt-3 text-3xl font-semibold text-cerulean-800">0</p>
+                        <p class="mt-3 text-3xl font-semibold text-cerulean-800">{{ $totalMembers }}</p>
                         <p class="mt-1 text-xs text-cerulean-600">Users in this group</p>
                     </article>
 
                     <article class="rounded-2xl border border-cerulean-200 bg-white p-5 shadow-sm">
                         <p class="text-xs font-semibold uppercase tracking-[0.16em] text-cerulean-600">Total Spent</p>
-                        <p class="mt-3 text-3xl font-semibold text-cerulean-800">0.00 MAD</p>
+                        <p class="mt-3 text-3xl font-semibold text-cerulean-800">{{$totalSpent}} MAD</p>
                         <p class="mt-1 text-xs text-cerulean-600">All expenses combined</p>
                     </article>
 
                     <article class="rounded-2xl border border-cerulean-200 bg-white p-5 shadow-sm">
                         <p class="text-xs font-semibold uppercase tracking-[0.16em] text-cerulean-600">Categories</p>
-                        <p class="mt-3 text-3xl font-semibold text-cerulean-800">0</p>
+                        <p class="mt-3 text-3xl font-semibold text-cerulean-800">{{$totalCategories}}</p>
                         <p class="mt-1 text-xs text-cerulean-600">Active categories</p>
                     </article>
 
                     <article class="rounded-2xl border border-cerulean-200 bg-white p-5 shadow-sm">
                         <p class="text-xs font-semibold uppercase tracking-[0.16em] text-cerulean-600">Expenses</p>
-                        <p class="mt-3 text-3xl font-semibold text-cerulean-800">0</p>
+                        <p class="mt-3 text-3xl font-semibold text-cerulean-800">{{$totalExpenses}}</p>
                         <p class="mt-1 text-xs text-cerulean-600">Recorded expenses</p>
                     </article>
                 </section>
@@ -70,9 +70,10 @@
                     </div>
 
                     <div class="mt-5 space-y-3">
+                        @forelse($categories as $category)
                         <article class="grid gap-3 rounded-2xl border border-cerulean-200 bg-cerulean-50 p-4 sm:grid-cols-[1fr_auto] sm:items-center">
                             <div>
-                                <p class="text-sm font-semibold text-cerulean-800">Food</p>
+                                <p class="text-sm font-semibold text-cerulean-800">{{ $category->name }}</p>
                                 <p class="text-xs text-cerulean-600">Category for groceries and shared meals</p>
                             </div>
 
@@ -95,32 +96,10 @@
                                 </button>
                             </div>
                         </article>
+                        @empty
+                            <div>nothing yet</div>
+                        @endforelse
 
-                        <article class="grid gap-3 rounded-2xl border border-cerulean-200 bg-cerulean-50 p-4 sm:grid-cols-[1fr_auto] sm:items-center">
-                            <div>
-                                <p class="text-sm font-semibold text-cerulean-800">Utilities</p>
-                                <p class="text-xs text-cerulean-600">Category for water, electricity, and internet</p>
-                            </div>
-
-                            <div class="flex gap-2">
-                                <button
-                                    type="button"
-                                    data-open-modal="edit-category-modal"
-                                    data-category-name="Utilities"
-                                    class="rounded-lg border border-cerulean-300 bg-white px-3 py-1.5 text-xs font-semibold text-cerulean-700 hover:bg-cerulean-50"
-                                >
-                                    Edit
-                                </button>
-                                <button
-                                    type="button"
-                                    data-open-modal="delete-category-modal"
-                                    data-category-name="Utilities"
-                                    class="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50"
-                                >
-                                    Delete
-                                </button>
-                            </div>
-                        </article>
                     </div>
                 </section>
 
@@ -140,41 +119,28 @@
                     </div>
 
                     <div class="mt-5 grid gap-3 sm:grid-cols-2">
+                        @forelse($members as $member)
+
                         <article class="flex items-center gap-3 rounded-2xl border border-cerulean-200 bg-cerulean-50 p-3">
                             <div class="relative">
-                                <img src="https://i.pravatar.cc/80?img=53" alt="Member avatar" class="h-12 w-12 rounded-xl border border-cerulean-200 object-cover">
+                                <img src="{{asset('/storage/avatars/'.$member->user->avatar)}}" alt="Member avatar" class="h-12 w-12 rounded-xl border border-cerulean-200 object-cover">
                                 <span class="absolute -bottom-1 -right-1 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-cerulean-700 px-1.5 text-[10px] font-semibold text-white">
-                                    +8
+                                    {{$member->user->reputation}}
                                 </span>
                             </div>
 
                             <div class="min-w-0">
                                 <p class="truncate text-sm font-semibold text-cerulean-800">Member Name</p>
-                                <p class="truncate text-xs text-cerulean-600">Role: Member</p>
+                                <p class="truncate text-xs text-cerulean-600">{{$member->role}}</p>
                             </div>
 
                             <button type="button" class="ml-auto rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50">
                                 Remove
                             </button>
                         </article>
-
-                        <article class="flex items-center gap-3 rounded-2xl border border-cerulean-200 bg-cerulean-50 p-3">
-                            <div class="relative">
-                                <img src="https://i.pravatar.cc/80?img=56" alt="Member avatar" class="h-12 w-12 rounded-xl border border-cerulean-200 object-cover">
-                                <span class="absolute -bottom-1 -right-1 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-cerulean-700 px-1.5 text-[10px] font-semibold text-white">
-                                    +3
-                                </span>
-                            </div>
-
-                            <div class="min-w-0">
-                                <p class="truncate text-sm font-semibold text-cerulean-800">Member Name</p>
-                                <p class="truncate text-xs text-cerulean-600">Role: Member</p>
-                            </div>
-
-                            <button type="button" class="ml-auto rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50">
-                                Remove
-                            </button>
-                        </article>
+                        @empty
+                            <div>you are the only member invite someone !</div>
+                        @endforelse
                     </div>
                 </section>
             </div>
@@ -187,38 +153,22 @@
                 <p class="mt-2 text-xs text-cerulean-700">Amount, payer, and category</p>
 
                 <div class="mt-5 space-y-3">
-                    <article class="rounded-2xl border border-cerulean-200 bg-cerulean-50 p-3">
-                        <div class="flex items-center gap-3">
-                            <img src="https://i.pravatar.cc/80?img=12" alt="Payer avatar" class="h-11 w-11 rounded-xl border border-cerulean-200 object-cover">
-                            <div class="min-w-0">
-                                <p class="truncate text-sm font-semibold text-cerulean-800">User Name</p>
-                                <p class="truncate text-xs text-cerulean-600">Food</p>
+                    @forelse($expenses as $expense)
+                        <article class="rounded-2xl border border-cerulean-200 bg-cerulean-50 p-3">
+                            <div class="flex items-center gap-3">
+                                <img src="{{asset('storage/avatars'.$expense->membership->user->avatar)}}" alt="Payer avatar" class="h-11 w-11 rounded-xl border border-cerulean-200 object-cover">
+                                <div class="min-w-0">
+                                    <p class="truncate text-sm font-semibold text-cerulean-800">{{$expense->membership->user->name}}</p>
+                                    <p class="truncate text-xs text-cerulean-600">{{$expense->category->name}}</p>
+                                </div>
+                                <p class="ml-auto text-sm font-semibold text-cerulean-800">{{$expense->amount}} MAD</p>
                             </div>
-                            <p class="ml-auto text-sm font-semibold text-cerulean-800">0.00 MAD</p>
-                        </div>
-                    </article>
+                        </article>
+                    @empty
+                        <p>no expenses yet !</p>
+                    @endforelse
 
-                    <article class="rounded-2xl border border-cerulean-200 bg-cerulean-50 p-3">
-                        <div class="flex items-center gap-3">
-                            <img src="https://i.pravatar.cc/80?img=32" alt="Payer avatar" class="h-11 w-11 rounded-xl border border-cerulean-200 object-cover">
-                            <div class="min-w-0">
-                                <p class="truncate text-sm font-semibold text-cerulean-800">User Name</p>
-                                <p class="truncate text-xs text-cerulean-600">Utilities</p>
-                            </div>
-                            <p class="ml-auto text-sm font-semibold text-cerulean-800">0.00 MAD</p>
-                        </div>
-                    </article>
 
-                    <article class="rounded-2xl border border-cerulean-200 bg-cerulean-50 p-3">
-                        <div class="flex items-center gap-3">
-                            <img src="https://i.pravatar.cc/80?img=41" alt="Payer avatar" class="h-11 w-11 rounded-xl border border-cerulean-200 object-cover">
-                            <div class="min-w-0">
-                                <p class="truncate text-sm font-semibold text-cerulean-800">User Name</p>
-                                <p class="truncate text-xs text-cerulean-600">Transport</p>
-                            </div>
-                            <p class="ml-auto text-sm font-semibold text-cerulean-800">0.00 MAD</p>
-                        </div>
-                    </article>
                 </div>
             </aside>
         </div>
@@ -292,16 +242,22 @@
                 <div>
                     <label for="expense-category" class="block text-xs font-medium text-cerulean-800">Category</label>
                     <select id="expense-category" class="mt-2 block h-11 w-full rounded-xl border border-cerulean-200 bg-white px-3 text-sm text-cerulean-800 outline-none focus:border-cerulean-600">
-                        <option>Food</option>
-                        <option>Utilities</option>
-                        <option>Transport</option>
+                        <option>choose a category </option>
+                        @forelse($colocation->$categories ?? [] as $category)
+                            <option>{{$category->name}}</option>
+                        @empty
+                        @endforelse
                     </select>
                 </div>
 
                 <div>
                     <label for="expense-payer" class="block text-xs font-medium text-cerulean-800">Paid By</label>
                     <select id="expense-payer" class="mt-2 block h-11 w-full rounded-xl border border-cerulean-200 bg-white px-3 text-sm text-cerulean-800 outline-none focus:border-cerulean-600">
-                        <option>User Name</option>
+                        <option value="{{ $membership->id }}">Me</option>
+                    @foreach($members as $member)
+                            <option value="{{$member->id}}" >{{$member->user->name}}</option>
+
+                        @endforeach
                     </select>
                 </div>
 
