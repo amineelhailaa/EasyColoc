@@ -49,3 +49,7 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/owner/dashboard',[\App\Http\Controllers\OwnerController::class, 'index'])->name('owner.dashboard');
 
+
+
+//expense
+Route::post('/expense/add',[\App\Http\Controllers\ExpenseController::class,'store'])->name('expense.add');

@@ -25,7 +25,7 @@ class ExpenseFormRequest extends FormRequest
             //
             'title' => 'required|string',
             'amount' => 'required|numeric',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'nullable|exists:categories,id',
             'date' => 'required|date',
             'membership_id' => 'required|exists:memberships,id',
         ];

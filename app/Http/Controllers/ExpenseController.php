@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ExpenseFormRequest;
+use App\Models\Membership;
 use App\Models\User;
 use App\Services\ExpenseService;
 use Illuminate\Http\Request;
@@ -32,8 +33,9 @@ class ExpenseController extends Controller
      */
     public function store(ExpenseFormRequest $request, ExpenseService $expenseService)
     {
+
         $colocation  = auth()->user()->membership->colocation;
-        if($colocation!= $request->membership_id->colocation){
+        if($colocation!= Membership::find($request->membership_id)->colocation){
             //return cuz he is not my groupe ms how to show the error ?
 
         }
