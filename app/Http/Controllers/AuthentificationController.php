@@ -18,6 +18,8 @@ class AuthentificationController extends Controller
         $request->session()->regenerate();
         return redirect()->intended(route('home'));
     }
+
+
     public function logout(Request $request){
         Auth::logout();
         $request->session()->invalidate();

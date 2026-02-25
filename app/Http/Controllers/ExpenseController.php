@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ExpenseFormRequest;
 use App\Models\User;
+use App\Services\ExpenseService;
 use Illuminate\Http\Request;
 
 class ExpenseController extends Controller
@@ -12,7 +14,9 @@ class ExpenseController extends Controller
      */
     public function index()
     {
-        //
+       $colocation =  auth()->user()->membership->colocation;
+       $expenses = $colocation->expenses;
+       return $expenses; //ill use this function i guess in other functions or what
     }
 
     /**
@@ -26,15 +30,16 @@ class ExpenseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ExpenseFormRequest $request, ExpenseService $expenseService)
     {
-        $request->validate([
-            'title' => 'string|required',
-            'amount' => 'numeric:|required',
-            'date' => 'date|required|date_format:Y-m-d',
-            'category_id' => 'nullable|exists:categories,id',
-            'membership_id' => 'required|exists:users,id',
-        ]);
+        $colocation  = auth()->user()->membership->colocation;
+        if($colocation!= $request->membership_id->colocation){
+            //return cuz he is not my groupe ms how to show the error ?
+
+        }
+
+        $expenseService->createwithSplits($request);
+
 //            auth()->user()->membership->colocation->expenses()->create([
 //                'title'=>$request->title,
 //                'amount'=>$request->amount,
@@ -51,11 +56,12 @@ class ExpenseController extends Controller
 //            'user_id' => $request->user_id,
 //        ]);
 
-        //need to make splits now
+        //need to make splits
+
 
 
         return redirect()->back();
-        //
+
     }
 
     /**

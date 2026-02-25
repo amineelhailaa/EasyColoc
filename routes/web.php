@@ -15,7 +15,7 @@ Route::get('/register', function () {
 
 Route::get('/', function () {
    return view('welcome');
-})->name('register');
+})->name('home');
 
 
 Route::middleware('guest')->group(function () {

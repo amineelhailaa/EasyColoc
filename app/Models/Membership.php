@@ -19,10 +19,13 @@ class Membership extends Model
         return $this->belongsTo(Colocation::class, 'colocation_id');
     }
 
-    public function splitsAsCrediteur(){
-        return $this->hasMany(Split::class, 'crediteur_id');
+
+    public function splitsAsDebuteur(): BelongsTo{
+        return $this->belongsTo(Split::class, 'debuteur_id');
     }
-    public function splitsAsdebuteur(){
-        return $this->hasMany(Split::class,'debiteur_id');
+
+    public function splitsAsCrediteur(): BelongsTo{
+        return $this->belongsTo(Split::class, 'crediteur_id');
     }
+
 }
