@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Membership extends Model
 {
@@ -19,6 +20,11 @@ class Membership extends Model
         return $this->belongsTo(Colocation::class, 'colocation_id');
     }
 
+
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class);
+    }
 
     public function splitsAsDebuteur(): BelongsTo{
         return $this->belongsTo(Split::class, 'debuteur_id');

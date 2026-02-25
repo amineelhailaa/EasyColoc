@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthentificationController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ColocationController;
+
+Route::view('/main', 'main')->name('main');
 
 
 //Route::get('/login', function () {
@@ -36,12 +39,20 @@ Route::middleware('guest')->group(function () {
 
 //no membership roles
 Route::middleware('notMember')->group(function () {
-    Route::view('/home','welcome');
+    Route::view('/home','welcome')->name('home');
+    Route::resource('colocation', ColocationController::class)->only(['store','create','index']);
+
+
+
+    //invitation
+    Route::get('/invitation/link/{token}',[InvitationController::class,'show'])->name('invitation.show');
+    Route::post('/invitation/accept',[InvitationController::class,'accept'])->name('invitation.accept');
+    Route::post('/invitation/decline',[InvitationController::class,'decline'])->name('invitation.decline');
+
 });
 
 
 
-Route::view('/test', 'globalDashboard');
 
 
 Route::middleware('auth')->group(function (){
@@ -51,12 +62,7 @@ Route::middleware('auth')->group(function (){
     Route::put('/profile/pwd', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
     //create colocation
-    Route::resource('colocation', ColocationController::class)->only(['store']);
-    //invitation
-    Route::get('/invitation/link/{token}',[InvitationController::class,'show'])->name('invitation.show');
-    Route::post('/invitation/accept',[InvitationController::class,'accept'])->name('invitation.accept');
-    Route::post('/invitation/decline',[InvitationController::class,'decline'])->name('invitation.decline');
-});
+    });
 
 
 
@@ -69,15 +75,13 @@ Route::middleware('auth')->group(function (){
 
 //member
 Route::middleware('membership.role:member')->group(function () {
-
-
-
+//    Route::resource('colocation', ColocationController::class)->only('index');
+    Route::get('/member/dashboard',[MemberController::class,'index'])->name('member.dashboard');
 });
 
 //owner
 Route::middleware('membership.role:owner')->group(function () {
     Route::get('/owner/dashboard',[\App\Http\Controllers\OwnerController::class, 'index'])->name('owner.dashboard');
-
 
     //invitation
     Route::post('/invitation/send',[InvitationController::class,'store'])->name('invitation.send');
@@ -91,7 +95,7 @@ Route::middleware('membership.role:owner')->group(function () {
 Route::middleware('membership.role:owner,member')->group(function () {
     // aa expense
     Route::post('/expense/add',[\App\Http\Controllers\ExpenseController::class,'store'])->name('expense.add');
-    Route::resource('colocation', ColocationController::class)->except(['store','index']);
+//    Route::resource('colocation', ColocationController::class)->except(['store','index','create']);
 });
 
 

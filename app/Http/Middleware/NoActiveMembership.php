@@ -22,7 +22,10 @@ class NoActiveMembership
         $membership = $user->membership()->where('status', 'active')->first();
 
         if($membership){
-            return redirect()->route('colocation.index');
+            if($membership->role == 'owner'){
+                return redirect()->route('owner.dashboard');
+            }
+            return redirect()->route('member.dashboard');
         }
 
         return $next($request);
