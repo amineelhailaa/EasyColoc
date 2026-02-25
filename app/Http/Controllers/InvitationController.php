@@ -55,8 +55,6 @@ class InvitationController extends Controller
         //igot url now lets send thissh
         Mail::to($data['email'])->send(new InvitationMail($urlToSend));
         return redirect()->back();
-
-
     }
 
     public function accept(Request $request){
