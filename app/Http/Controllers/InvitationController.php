@@ -34,7 +34,7 @@ class InvitationController extends Controller
     public function store(Request $request)
     {
         //request will have only the email of the participant
-        //illcreate token , create url and email and put this in database , hundle accepting in another query
+        //illcreate token , fuck it ill create url and email and put this in database , hundle accepting in another query
 
         $token = Str::random(15);
         $data =  $request->validate(
@@ -42,7 +42,6 @@ class InvitationController extends Controller
 
 
 
-        // null with fn safe
         $colocation = auth()->user()->membership->colocation;
         Invitation::create([
             'token' => $token,
@@ -78,9 +77,9 @@ class InvitationController extends Controller
         $email = $request->email;
         $invitation = Invitation::where('token', $token)->where('email',$email)->firstOrFail();
         $invitation->update([
-            'status' => 'rejected'
+            'status' => 'declined'
         ]);
-        return redirect()->back();
+        return redirect()->route('home');
     }
 
     /**

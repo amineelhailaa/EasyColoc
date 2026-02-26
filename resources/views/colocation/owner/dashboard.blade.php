@@ -192,9 +192,36 @@
         </div>
 
         <section class="rounded-3xl border border-cerulean-200 bg-white p-5 shadow-sm md:p-6">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-wrap items-center justify-between gap-3">
                 <h2 class="text-xl font-semibold text-cerulean-800">Recent Expenses</h2>
-                <span class="rounded-full border border-cerulean-200 bg-cerulean-50 px-2.5 py-1 text-xs font-semibold text-cerulean-700">Live</span>
+                <div class="flex items-center gap-2">
+                    <form action="{{ route('owner.dashboard') }}" method="get" class="flex items-center gap-2">
+                        <select name="month" class="h-9 rounded-xl border border-cerulean-200 bg-white px-2 text-xs text-cerulean-800 outline-none focus:border-cerulean-600">
+                            <option value="">All months</option>
+                            @php($months = [1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug', 9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec'])
+                            @foreach($months as $value => $label)
+                                <option value="{{ $value }}" @selected((int) request('month') === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+
+                        <select name="year" class="h-9 rounded-xl border border-cerulean-200 bg-white px-2 text-xs text-cerulean-800 outline-none focus:border-cerulean-600">
+                            <option value="2026" @selected((int) request('year', 2026) === 2026)>2026</option>
+                        </select>
+
+                        <button type="submit" class="rounded-lg border border-cerulean-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-cerulean-700 hover:bg-cerulean-100">
+                            Filter
+                        </button>
+
+                        @if(request('month') && request('year'))
+                            <a href="{{ route('owner.dashboard') }}" class="rounded-lg border border-cerulean-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-cerulean-700 hover:bg-cerulean-100">
+                                Clear
+                            </a>
+                        @endif
+                    </form>
+                    <span class="rounded-full border border-cerulean-200 bg-cerulean-50 px-2.5 py-1 text-xs font-semibold text-cerulean-700">
+                        {{ request('month') && request('year') ? 'Filtered' : 'Last 5' }}
+                    </span>
+                </div>
             </div>
             <p class="mt-2 text-xs text-cerulean-700">Amount, payer, and category</p>
 
@@ -215,6 +242,11 @@
                 @endforelse
             </div>
         </section>
+    </div>
+
+    <div class="fixed bottom-5 right-5 z-40 rounded-2xl border border-cerulean-200 bg-white/95 px-4 py-2 shadow-lg backdrop-blur">
+        <p class="text-[10px] font-semibold uppercase tracking-[0.14em] text-cerulean-600">My Reputation</p>
+        <p class="text-lg font-semibold text-cerulean-800">{{ $reputation }}</p>
     </div>
 
     <div id="add-category-modal" class="fixed hidden inset-0 z-50 items-center justify-center bg-cerulean-900/50 p-4">

@@ -30,6 +30,9 @@ class Membership extends Model
         return $this->hasMany(Split::class, 'debuteur_id');
     }
 
+
+
+
     public function splitsAsCrediteur(): HasMany{
         return $this->hasMany(Split::class, 'crediteur_id');
     }

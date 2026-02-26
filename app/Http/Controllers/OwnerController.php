@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Colocation;
+use App\Models\Membership;
+use App\Models\Split;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class OwnerController extends Controller
@@ -11,14 +14,24 @@ class OwnerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $membership = auth()->user()->membership;
         $myBalance = $membership->balance;
         $colocation = $membership->colocation;
-
+        $year = $request->get("year");
+        $month = $request->get("month");
         //expenses
-        $expenses= $colocation->expenses()->with('membership.user','category')->latest()->limit(5)->get();
+        if($year && $month){
+            $expenses = $colocation->expenses()->with('membership.user','category')
+                ->whereYear('date', $year)
+                ->whereMonth('date', $month)
+                ->latest('date')->get();
+        } else {
+            $expenses= $colocation->expenses()->with('membership.user','category')
+                ->latest()->limit(5)->get();
+        }
+
         $totalSpent = $colocation->expenses()->sum('amount');
         $totalExpenses = $colocation->expenses()->count();
 
@@ -31,9 +44,12 @@ class OwnerController extends Controller
         $totalCategories = $categories->count();
 
         $owes = $colocation->splits()->where('status','unpaid')->get();
+        //adding reputation
+        $reputation = auth()->user()->reputation;
 
         return view('colocation.owner.dashboard',compact(
             'membership',
+            'reputation',
             'myBalance',
             'colocation',
             'expenses',
@@ -116,4 +132,65 @@ class OwnerController extends Controller
 
     // my functions
 
+
+    public function kickMouad(User $mouad, Membership $owner)
+    {
+
+//        $owner->balance = $owner->splitsAsCrediteur()->sum('part')->get() - $owner->splitsAsDebuteur()->sum('part')->get();
+
+
+        //change my status
+      $mouad->membership()->update([
+          'status' => 'inactive',
+          'left_at' => now(),
+      ]);
+
+
+
+      $mouad->membership->splitsAsCrediteur()->update(['crediteur_id' => $owner->id]);
+
+      $asDebuteurSplits = $mouad->membership->splitsAsDebuteur()->where('status','unpaid')->get();
+      $asCrediteurSplits = $mouad->membership->splitsAsCrediteur()->where('status','unpaid')->get();
+
+
+
+
+
+
+
+      foreach ($asCrediteurSplits as $split) {
+          $exist = $owner->splitsAsCrediteur()->where(['debuteur_id',$split->debuteur_id])->first();
+          if ($exist) {
+              $exist->part += $split->part;
+              $exist->save();
+              $split->delete();
+          } else {
+              $split->crediteur_id = $owner->id;
+              $split->save();
+          }
+
+          $owner->balance += $split->part;
+      }
+
+      foreach ($asDebuteurSplits as $split) {
+          $exist = $owner->splitsAsDebuteur()->where(['crediteur_id',$split->crediteur_id])->first();
+
+          if ($exist) {
+              if($exist->part < $split->part){
+
+              } else {
+                  $exist->part -= $split->part;
+                  $exist->save();
+
+              }
+
+          }
+
+      }
+
+
+
+
+      return redirect()->back();
+    }
 }

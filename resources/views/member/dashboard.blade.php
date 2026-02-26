@@ -27,6 +27,15 @@
                     >
                         Add Expense
                     </button>
+                    <form method="post" action="{{route('member.quit')}}">
+                        @csrf
+                        <button
+                            type="submit"
+                            class="inline-flex items-center rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-100"
+                        >
+                            Quit Group
+                        </button>
+                    </form>
                 </div>
             </div>
         </section>
@@ -111,6 +120,11 @@
                 @endforelse
             </div>
         </section>
+    </div>
+
+    <div class="fixed bottom-5 right-5 z-40 rounded-2xl border border-cerulean-200 bg-white/95 px-4 py-2 shadow-lg backdrop-blur">
+        <p class="text-[10px] font-semibold uppercase tracking-[0.14em] text-cerulean-600">My Reputation</p>
+        <p class="text-lg font-semibold text-cerulean-800">{{ $reputation }}</p>
     </div>
 
     <div id="add-expense-modal" class="fixed hidden inset-0 z-50 items-center justify-center bg-cerulean-900/50 p-4">

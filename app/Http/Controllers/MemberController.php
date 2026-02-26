@@ -16,9 +16,10 @@ class MemberController extends Controller
         $totalOwe = $membership->balance;
         $members = $colocation->memberships()->with('user')->where('status','active')->where('user_id','!=',auth()->id())->get();
         $owes = $colocation->splits()->where('status','unpaid')->get();
-
+        $reputation = auth()->user()->reputation ;
         return view('member.dashboard', compact(
             'membership',
+            'reputation',
             'colocation',
             'expenses',
             'categories',
@@ -27,5 +28,32 @@ class MemberController extends Controller
             'members',
             'owes'
         ));
+    }
+
+
+    public function quitColocation(Request $request){
+        $user = $request->user();
+        $membership = $user->membership;
+        $membership->status = 'inactive';
+        $membership->left_at = now();
+
+        if ($membership->balance < 0){
+            $user->reputation -= 1 ;
+        }
+        elseif ($membership->balance > 0){
+            $user->reputation += 1 ;
+        }
+        $user->save();
+
+        $membership->splitsAsDebuteur()->update([
+            'status' => 'paid'
+        ]);
+
+        $membership->splitsAsCrediteur()->update([
+            'status' => 'paid'
+        ]);
+
+        $membership->save();
+        return redirect()->route('home');
     }
 }

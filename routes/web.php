@@ -78,6 +78,7 @@ Route::middleware('auth')->group(function (){
 Route::middleware('membership.role:member')->group(function () {
 //    Route::resource('colocation', ColocationController::class)->only('index');
     Route::get('/member/dashboard',[MemberController::class,'index'])->name('member.dashboard');
+    Route::post('/member/quit',[MemberController::class,'quitColocation'])->name('member.quit');
 });
 
 //owner
