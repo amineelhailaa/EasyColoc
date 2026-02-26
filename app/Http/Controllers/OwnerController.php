@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Colocation;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,7 @@ class OwnerController extends Controller
         //expenses
         $expenses= $colocation->expenses()->with('membership.user','category')->latest()->limit(5)->get();
         $totalSpent = $colocation->expenses()->sum('amount');
-        $totalExpenses = $colocation->expenses()->sum('amount');
+        $totalExpenses = $colocation->expenses()->count();
 
         //members
         $members = $colocation->memberships()->with('user')->where('status','active')->where('user_id','!=',auth()->id())->get();
@@ -52,10 +53,6 @@ class OwnerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
@@ -84,9 +81,28 @@ class OwnerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    //manage categories
+    public function destroy(Category $category)
     {
-        //
+        $colocation = auth()->user()->membership->colocation;
+        $colocation->categories()->findOrFail($category->id);
+        $category->delete();
+        return redirect()->back();
+    }
+
+    //store categories
+    public function store(Request $request)
+    {
+        $membership = auth()->user()->membership;
+        $colocation = $membership->colocation;
+        $request->validate([
+            'name' => 'required|string',
+        ]);
+        $colocation->categories()->create([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->back();
     }
 
 

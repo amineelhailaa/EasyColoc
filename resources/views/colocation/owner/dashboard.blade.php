@@ -63,6 +63,7 @@
 
                         <button
                             type="button"
+                            data-open-modal="add-category-modal"
                             class="rounded-xl border border-cerulean-300 bg-cerulean-50 px-4 py-2 text-sm font-semibold text-cerulean-700 hover:bg-cerulean-100"
                         >
                             Add Category
@@ -81,7 +82,7 @@
                                 <button
                                     type="button"
                                     data-open-modal="edit-category-modal"
-                                    data-category-name="Food"
+                                    data-category-name="{{ $category->name }}"
                                     class="rounded-lg border border-cerulean-300 bg-white px-3 py-1.5 text-xs font-semibold text-cerulean-700 hover:bg-cerulean-50"
                                 >
                                     Edit
@@ -89,7 +90,8 @@
                                 <button
                                     type="button"
                                     data-open-modal="delete-category-modal"
-                                    data-category-name="Food"
+                                    data-category-id="{{ $category->id }}"
+                                    data-category-name="{{ $category->name }}"
                                     class="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50"
                                 >
                                     Delete
@@ -175,6 +177,33 @@
         </div>
     </div>
 
+    <div id="add-category-modal" class="fixed hidden inset-0 z-50 items-center justify-center bg-cerulean-900/50 p-4">
+        <div class="w-full max-w-md rounded-2xl border border-cerulean-200 bg-white p-5 shadow-xl">
+            <div class="flex items-start justify-between gap-3">
+                <div>
+                    <h3 class="text-lg font-semibold text-cerulean-800">Add Category</h3>
+                    <p class="mt-1 text-xs text-cerulean-600">Create a new category for the group.</p>
+                </div>
+                <button type="button" data-close-modal class="rounded-lg p-2 text-cerulean-700 hover:bg-cerulean-100">X</button>
+            </div>
+
+            <form class="mt-4 space-y-3" action="{{ route('owner.category.add') }}" method="post">
+                @csrf
+                <x-form.input
+                    id="category-name"
+                    name="name"
+                    label="Name"
+                    required
+                />
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" data-close-modal class="rounded-xl border border-cerulean-300 px-4 py-2 text-sm font-semibold text-cerulean-700 hover:bg-cerulean-50">Cancel</button>
+                    <button type="submit" class="rounded-xl bg-cerulean-700 px-4 py-2 text-sm font-semibold text-white hover:bg-cerulean-800">Add Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="edit-category-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-cerulean-900/50 p-4">
         <div class="w-full max-w-md rounded-2xl border border-cerulean-200 bg-white p-5 shadow-xl">
             <div class="flex items-start justify-between gap-3">
@@ -208,10 +237,18 @@
                 <span id="delete-category-name" class="font-semibold text-cerulean-800">this category</span>?
             </p>
 
-            <div class="mt-5 flex justify-end gap-2">
+            <form
+                id="delete-category-form"
+                class="mt-5 flex justify-end gap-2"
+                method="post"
+{{--                js placed that id by of __category__ passito lroute--}}
+                data-action-template="{{ route('owner.category.delete', ['category' => '__CATEGORY__']) }}"
+            >
+                @csrf
+                @method('DELETE')
                 <button type="button" data-close-modal class="rounded-xl border border-cerulean-300 px-4 py-2 text-sm font-semibold text-cerulean-700 hover:bg-cerulean-50">Cancel</button>
-                <button type="button" class="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-100">Delete</button>
-            </div>
+                <button type="submit" class="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-100">Delete</button>
+            </form>
         </div>
     </div>
 
@@ -329,6 +366,7 @@
             const modals = document.querySelectorAll('[id$="-modal"]');
             const editCategoryInput = document.getElementById('edit-category-name');
             const deleteCategoryName = document.getElementById('delete-category-name');
+            const deleteCategoryForm = document.getElementById('delete-category-form');
 
             const closeAll = () => {
                 modals.forEach((modal) => {
@@ -349,6 +387,7 @@
             openers.forEach((button) => {
                 button.addEventListener('click', () => {
                     const target = button.dataset.openModal;
+                    const categoryId = button.dataset.categoryId || '';
                     const categoryName = button.dataset.categoryName || '';
 
                     if (target === 'edit-category-modal' && editCategoryInput) {
@@ -357,6 +396,10 @@
 
                     if (target === 'delete-category-modal' && deleteCategoryName) {
                         deleteCategoryName.textContent = categoryName || 'this category';
+                        if (deleteCategoryForm) {
+                            const template = deleteCategoryForm.dataset.actionTemplate || '';
+                            deleteCategoryForm.action = template.replace('__CATEGORY__', categoryId);
+                        }
                     }
 
                     openModal(target);

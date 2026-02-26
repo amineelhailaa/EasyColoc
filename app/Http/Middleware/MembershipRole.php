@@ -19,11 +19,14 @@ class MembershipRole
         if (!$user){
             return redirect()->route('login');
         }
-        if(!$user->membership){
+        if(!$user->membership && $user->membership->status == 'active'){
             return redirect()->route('colocation.create');
         }
         if (!empty($roles) && !in_array($user->membership->role, $roles)){
-            return redirect()->route('home');
+            if($user->membership->role == 'owner'){
+                return redirect()->route('owner.dashboard');
+            }
+            return redirect()->route('member.dashboard');
         }
         return $next($request);
     }

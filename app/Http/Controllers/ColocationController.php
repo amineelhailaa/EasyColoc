@@ -37,7 +37,7 @@ class ColocationController extends Controller
             'description'=>$request->description,
             'avatar'=>$request->avatar,]);
        $colocation->memberships()->create(['user_id'=>$request->user()->id,'role'=>'owner']);
-       redirect()->route('owner.dashboard');
+      return  redirect()->route('owner.dashboard');
     }
 
     /**

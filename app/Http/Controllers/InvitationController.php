@@ -69,7 +69,7 @@ class InvitationController extends Controller
             'status'=> 'active',
             'user_id'=> auth()->id(),
         ]);
-        redirect()->route('member.dashboard');
+       return redirect()->route('member.dashboard');
 
     }
 
