@@ -24,7 +24,7 @@
                 <p class="mt-3 text-sm text-cerulean-700">
                     Create a new group, invite your roommates, and start tracking shared expenses.
                 </p>
-                <a href="#" class="mt-6 inline-flex rounded-xl bg-cerulean-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-cerulean-800">
+                <a href="{{ route('colocation.create') }}" class="mt-6 inline-flex rounded-xl bg-cerulean-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-cerulean-800">
                     Create Group
                 </a>
             </article>
@@ -35,12 +35,92 @@
                 <p class="mt-3 text-sm text-cerulean-700">
                     Paste your invitation link and join an existing group in seconds.
                 </p>
-                <a href="#" class="mt-6 inline-flex rounded-xl bg-cerulean-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-cerulean-800">
+                <button
+                    type="button"
+                    id="open-join-modal"
+                    class="mt-6 inline-flex rounded-xl bg-cerulean-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-cerulean-800"
+                >
                     Join Group
-                </a>
+                </button>
             </article>
         </div>
     </section>
 </main>
+
+<div id="join-group-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-cerulean-900/50 p-4">
+    <div class="w-full max-w-md rounded-2xl border border-cerulean-200 bg-white p-5 shadow-xl">
+        <div class="flex items-start justify-between gap-3">
+            <div>
+                <h3 class="text-lg font-semibold text-cerulean-800">Join Group</h3>
+                <p class="mt-1 text-xs text-cerulean-600">Paste your invitation link.</p>
+            </div>
+            <button type="button" id="close-join-modal" class="rounded-lg p-2 text-cerulean-700 hover:bg-cerulean-100">X</button>
+        </div>
+
+        <form id="join-group-form" class="mt-4 space-y-3">
+            <div>
+                <label for="join-link-input" class="block text-xs font-medium text-cerulean-800">Invitation Link</label>
+                <input
+                    id="join-link-input"
+                    type="url"
+                    placeholder="https://..."
+                    class="mt-2 block h-11 w-full rounded-xl border border-cerulean-200 bg-white px-3 text-sm text-cerulean-800 outline-none focus:border-cerulean-600"
+                    required
+                />
+            </div>
+
+            <div class="flex justify-end gap-2 pt-1">
+                <button type="button" id="cancel-join-modal" class="rounded-xl border border-cerulean-300 px-4 py-2 text-sm font-semibold text-cerulean-700 hover:bg-cerulean-50">Cancel</button>
+                <button type="submit" class="rounded-xl bg-cerulean-700 px-4 py-2 text-sm font-semibold text-white hover:bg-cerulean-800">Go</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    (() => {
+        const body = document.body;
+        const modal = document.getElementById('join-group-modal');
+        const openBtn = document.getElementById('open-join-modal');
+        const closeBtn = document.getElementById('close-join-modal');
+        const cancelBtn = document.getElementById('cancel-join-modal');
+        const form = document.getElementById('join-group-form');
+        const input = document.getElementById('join-link-input');
+
+        if (!modal || !openBtn || !form || !input) return;
+
+        const openModal = () => {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            body.classList.add('overflow-hidden');
+            input.focus();
+        };
+
+        const closeModal = () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            body.classList.remove('overflow-hidden');
+        };
+
+        openBtn.addEventListener('click', openModal);
+        closeBtn?.addEventListener('click', closeModal);
+        cancelBtn?.addEventListener('click', closeModal);
+
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) closeModal();
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeModal();
+        });
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const link = input.value.trim();
+            if (!link) return;
+            window.location.href = link;
+        });
+    })();
+</script>
 </body>
 </html>

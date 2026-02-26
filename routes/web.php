@@ -8,8 +8,8 @@ use App\Http\Controllers\AuthentificationController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ColocationController;
-
-Route::view('/main', 'main')->name('main');
+use App\Http\Controllers\OwnerController;
+Route::view('/', 'main')->name('main');
 
 
 //Route::get('/login', function () {
@@ -81,10 +81,15 @@ Route::middleware('membership.role:member')->group(function () {
 
 //owner
 Route::middleware('membership.role:owner')->group(function () {
-    Route::get('/owner/dashboard',[\App\Http\Controllers\OwnerController::class, 'index'])->name('owner.dashboard');
+    Route::get('/owner/dashboard',[OwnerController::class, 'index'])->name('owner.dashboard');
 
     //invitation
     Route::post('/invitation/send',[InvitationController::class,'store'])->name('invitation.send');
+
+
+    //categories
+    Route::post('/owner/category',[OwnerController::class,'store'])->name('owner.category.add');
+    Route::delete('/owner/category/{category}',[OwnerController::class,'destroy'])->name('owner.category.delete');
 });
 
 

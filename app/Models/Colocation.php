@@ -32,4 +32,9 @@ class Colocation extends Model
     {
         return $this->hasMany(Split::class,'colocation_id');
     }
+
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class,'colocation_id');
+    }
 }
