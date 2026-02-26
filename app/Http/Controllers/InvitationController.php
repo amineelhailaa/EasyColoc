@@ -73,12 +73,22 @@ class InvitationController extends Controller
 
     }
 
+    public  function decline(Request $request){
+        $token = $request->token;
+        $email = $request->email;
+        $invitation = Invitation::where('token', $token)->where('email',$email)->firstOrFail();
+        $invitation->update([
+            'status' => 'rejected'
+        ]);
+        return redirect()->back();
+    }
+
     /**
      * Display the specified resource.
      */
     public function show(Request $request, $token)
     {
-        $invitation = Invitation::where('token', $token)->firstOrFail();
+        $invitation = Invitation::where('token', $token)->where('status','pending')->firstOrFail();
         $colocation = $invitation->colocation;
 
 

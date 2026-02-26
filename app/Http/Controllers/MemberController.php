@@ -15,7 +15,7 @@ class MemberController extends Controller
         $totalPaid = $membership->expenses()->sum('amount');
         $totalOwe = $membership->balance;
         $members = $colocation->memberships()->with('user')->where('status','active')->where('user_id','!=',auth()->id())->get();
-
+        $owes = $colocation->splits()->where('status','unpaid')->get();
 
         return view('member.dashboard', compact(
             'membership',
@@ -25,6 +25,7 @@ class MemberController extends Controller
             'totalPaid',
             'totalOwe',
             'members',
+            'owes'
         ));
     }
 }

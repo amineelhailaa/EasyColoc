@@ -14,6 +14,7 @@ class OwnerController extends Controller
     public function index()
     {
         $membership = auth()->user()->membership;
+        $myBalance = $membership->balance;
         $colocation = $membership->colocation;
 
         //expenses
@@ -29,8 +30,11 @@ class OwnerController extends Controller
         $categories = $colocation->categories ?? collect(); //fr count
         $totalCategories = $categories->count();
 
+        $owes = $colocation->splits()->where('status','unpaid')->get();
+
         return view('colocation.owner.dashboard',compact(
             'membership',
+            'myBalance',
             'colocation',
             'expenses',
             'totalSpent',
@@ -38,7 +42,8 @@ class OwnerController extends Controller
             'totalMembers',
             'members',
             'totalCategories',
-            'categories'
+            'categories',
+            'owes',
         ));
     }
 

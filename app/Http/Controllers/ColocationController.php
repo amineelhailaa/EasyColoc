@@ -33,9 +33,13 @@ class ColocationController extends Controller
      */
     public function store(ColocationFormRequest $request)
     {
+        $path = null;
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('avatars', 'public');
+        }
        $colocation =  Colocation::create(['name'=>$request->name,
             'description'=>$request->description,
-            'avatar'=>$request->avatar,]);
+            'avatar'=>$path]);
        $colocation->memberships()->create(['user_id'=>$request->user()->id,'role'=>'owner']);
       return  redirect()->route('owner.dashboard');
     }

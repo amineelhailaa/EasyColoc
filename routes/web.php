@@ -3,6 +3,7 @@
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\SplitController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthentificationController;
 use App\Http\Controllers\RegisterController;
@@ -101,6 +102,10 @@ Route::middleware('membership.role:owner,member')->group(function () {
     // aa expense
     Route::post('/expense/add',[\App\Http\Controllers\ExpenseController::class,'store'])->name('expense.add');
 //    Route::resource('colocation', ColocationController::class)->except(['store','index','create']);
+
+
+    //markaspaid
+    Route::patch('/split/paid',[SplitController::class,'marquerPayee'])->name('split.paid');
 });
 
 

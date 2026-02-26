@@ -34,6 +34,8 @@ class ExpenseController extends Controller
     public function store(ExpenseFormRequest $request, ExpenseService $expenseService)
     {
 
+
+
         $colocation  = auth()->user()->membership->colocation;
         if($colocation!= Membership::find($request->membership_id)->colocation){
             //return cuz he is not my groupe ms how to show the error ?

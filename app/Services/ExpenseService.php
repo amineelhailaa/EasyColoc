@@ -24,6 +24,20 @@ class ExpenseService
         ]);
         $Ids = $expense->colocation->memberships()->where('status','=','active')->pluck('id')->all(); //the all for getting array [1,2,3,4]
         $quota = $expense->amount/count($Ids); //member
+
+        //
+        //9sm quota per every user
+        foreach ($expense->colocation->memberships()->where('status','active')->get() as $m) {
+            if($m->id != $request->membership_id){
+                $m->balance = $m->balance - $quota;
+                $member->balance += $quota;
+                $m->save();
+            }
+        }
+        $member->save();
+
+        //
+
         foreach ($Ids as $Id) {
             if($member->id!=$Id){
 

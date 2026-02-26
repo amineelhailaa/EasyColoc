@@ -6,14 +6,17 @@
     <div class="w-full space-y-6">
         <section class="rounded-3xl border border-cerulean-200 bg-white p-6 shadow-sm md:p-8">
             <div class="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cerulean-500">
-                        {{ $colocation->name }}
-                    </p>
-                    <h1 class="mt-2 text-3xl font-semibold text-cerulean-800 md:text-4xl">Member Dashboard</h1>
-                    <p class="mt-2 max-w-3xl text-sm text-cerulean-700">
-                        Track your payments, balance, and the latest group expenses.
-                    </p>
+                <div class="flex items-center gap-3">
+                    <img src="{{ $colocation->avatar ? asset('storage/' . $colocation->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($colocation->name ?? 'Colocation') . '&background=0369a1&color=ffffff' }}" alt="Colocation logo" class="h-14 w-14 rounded-xl border border-cerulean-200 object-cover">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cerulean-500">
+                            {{ $colocation->name }}
+                        </p>
+                        <h1 class="mt-2 text-3xl font-semibold text-cerulean-800 md:text-4xl">Member Dashboard</h1>
+                        <p class="mt-2 max-w-3xl text-sm text-cerulean-700">
+                            Track your payments, balance, and the latest group expenses.
+                        </p>
+                    </div>
                 </div>
 
                 <div class="flex items-center gap-3">
@@ -43,7 +46,7 @@
 
             <article class="rounded-2xl border border-cerulean-200 bg-white p-5 shadow-sm">
                 <p class="text-xs font-semibold uppercase tracking-[0.16em] text-cerulean-600">My Balance</p>
-                <p class="mt-3 text-3xl font-semibold text-cerulean-800">
+                <p class="mt-3 text-3xl font-semibold {{ $totalOwe < 0 ? 'text-red-600' : ($totalOwe > 0 ? 'text-green-600' : 'text-cerulean-800') }}">
                     {{ $totalOwe }} MAD
                 </p>
                 <p class="mt-1 text-xs text-cerulean-600">Positive means you owe money</p>
@@ -72,6 +75,39 @@
                     </article>
                 @empty
                     <p class="text-sm text-cerulean-700">No expenses yet.</p>
+                @endforelse
+            </div>
+        </section>
+
+        <section class="rounded-3xl border border-cerulean-200 bg-white p-5 shadow-sm md:p-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-semibold text-cerulean-800">Owes</h2>
+                <span class="rounded-full border border-cerulean-200 bg-cerulean-50 px-2.5 py-1 text-xs font-semibold text-cerulean-700">Live</span>
+            </div>
+            <p class="mt-2 text-xs text-cerulean-700">Debtor is red, creditor is green</p>
+
+            <div class="mt-5 grid gap-3 md:grid-cols-2">
+                @forelse($owes as $owe)
+                    <article class="rounded-2xl border border-cerulean-200 bg-cerulean-50 p-3">
+                        <div class="flex items-center gap-3">
+                            <div class="min-w-0">
+                                <p class="truncate text-sm font-semibold text-red-600">{{ $owe->debuteur?->user?->name ?? 'Member' }}</p>
+                                <p class="truncate text-xs text-cerulean-600">owes</p>
+                                <p class="truncate text-sm font-semibold text-green-600">{{ $owe->crediteur?->user?->name ?? 'Member' }}</p>
+                            </div>
+                            <div class="ml-auto text-right">
+                                <p class="text-sm font-semibold text-cerulean-800">{{ $owe->part }} MAD</p>
+                                <form action="{{ route('split.paid') }}" method="post" class="mt-2">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="owe_id" value="{{ $owe->id }}">
+                                    <button type="submit" class="rounded-lg border border-cerulean-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-cerulean-700 hover:bg-cerulean-100">Mark as paid</button>
+                                </form>
+                            </div>
+                        </div>
+                    </article>
+                @empty
+                    <p class="text-sm text-cerulean-700">No owes yet.</p>
                 @endforelse
             </div>
         </section>

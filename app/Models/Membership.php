@@ -26,12 +26,12 @@ class Membership extends Model
         return $this->hasMany(Expense::class);
     }
 
-    public function splitsAsDebuteur(): BelongsTo{
-        return $this->belongsTo(Split::class, 'debuteur_id');
+    public function splitsAsDebuteur(): HasMany{
+        return $this->hasMany(Split::class, 'debuteur_id');
     }
 
-    public function splitsAsCrediteur(): BelongsTo{
-        return $this->belongsTo(Split::class, 'crediteur_id');
+    public function splitsAsCrediteur(): HasMany{
+        return $this->hasMany(Split::class, 'crediteur_id');
     }
 
 }

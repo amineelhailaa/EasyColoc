@@ -6,12 +6,15 @@
     <div class="w-full space-y-6">
         <section class="rounded-3xl border border-cerulean-200 bg-white p-6 shadow-sm md:p-8">
             <div class="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cerulean-500">{{ $colocation->title }}</p>
+                <div class="flex items-center gap-3">
+                    <img src="{{ $colocation->avatar ? asset('storage/' . $colocation->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($colocation->name ?? 'Colocation') . '&background=0369a1&color=ffffff' }}" alt="Colocation logo" class="h-14 w-14 rounded-xl border border-cerulean-200 object-cover">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cerulean-500">{{ $colocation->name ?? $colocation->title }}</p>
                     <h1 class="mt-2 text-3xl font-semibold text-cerulean-800 md:text-4xl">Group Dashboard</h1>
                     <p class="mt-2 max-w-3xl text-sm text-cerulean-700">
                         Manage your group from one page: members, categories, and expenses.
                     </p>
+                    </div>
                 </div>
 
                 <div class="flex items-center gap-3">
@@ -28,7 +31,7 @@
 
         <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
             <div class="space-y-6">
-                <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
                     <article class="rounded-2xl border border-cerulean-200 bg-white p-5 shadow-sm">
                         <p class="text-xs font-semibold uppercase tracking-[0.16em] text-cerulean-600">Members</p>
                         <p class="mt-3 text-3xl font-semibold text-cerulean-800">{{ $totalMembers }}</p>
@@ -39,6 +42,12 @@
                         <p class="text-xs font-semibold uppercase tracking-[0.16em] text-cerulean-600">Total Spent</p>
                         <p class="mt-3 text-3xl font-semibold text-cerulean-800">{{$totalSpent}} MAD</p>
                         <p class="mt-1 text-xs text-cerulean-600">All expenses combined</p>
+                    </article>
+
+                    <article class="rounded-2xl border border-cerulean-200 bg-white p-5 shadow-sm">
+                        <p class="text-xs font-semibold uppercase tracking-[0.16em] text-cerulean-600">My Balance</p>
+                        <p class="mt-3 text-3xl font-semibold {{ $myBalance < 0 ? 'text-red-600' : ($myBalance > 0 ? 'text-green-600' : 'text-cerulean-800') }}">{{ $myBalance }} MAD</p>
+                        <p class="mt-1 text-xs text-cerulean-600">Positive means you owe money</p>
                     </article>
 
                     <article class="rounded-2xl border border-cerulean-200 bg-white p-5 shadow-sm">
@@ -126,7 +135,7 @@
 
                         <article class="flex items-center gap-3 rounded-2xl border border-cerulean-200 bg-cerulean-50 p-3">
                             <div class="relative">
-                                <img src="{{asset('/storage/avatars/'.$member->user->avatar)}}" alt="Member avatar" class="h-12 w-12 rounded-xl border border-cerulean-200 object-cover">
+                                <img src="{{ $member->user->avatar ? asset('storage/' . $member->user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($member->user->name) . '&background=0f766e&color=ffffff' }}" alt="Member avatar" class="h-12 w-12 rounded-xl border border-cerulean-200 object-cover">
                                 <span class="absolute -bottom-1 -right-1 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-cerulean-700 px-1.5 text-[10px] font-semibold text-white">
                                     {{$member->user->reputation}}
                                 </span>
@@ -150,31 +159,62 @@
 
             <aside class="rounded-3xl border border-cerulean-200 bg-white p-5 shadow-sm md:p-6">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-semibold text-cerulean-800">Recent Expenses</h2>
+                    <h2 class="text-xl font-semibold text-cerulean-800">Owes</h2>
                     <span class="rounded-full border border-cerulean-200 bg-cerulean-50 px-2.5 py-1 text-xs font-semibold text-cerulean-700">Live</span>
                 </div>
-                <p class="mt-2 text-xs text-cerulean-700">Amount, payer, and category</p>
+                <p class="mt-2 text-xs text-cerulean-700">Debtor is red, creditor is green</p>
 
                 <div class="mt-5 space-y-3">
-                    @forelse($expenses as $expense)
+                    @forelse($owes as $owe)
                         <article class="rounded-2xl border border-cerulean-200 bg-cerulean-50 p-3">
                             <div class="flex items-center gap-3">
-                                <img src="{{asset('storage/avatars'.$expense->membership->user->avatar)}}" alt="Payer avatar" class="h-11 w-11 rounded-xl border border-cerulean-200 object-cover">
                                 <div class="min-w-0">
-                                    <p class="truncate text-sm font-semibold text-cerulean-800">{{$expense->membership->user->name}}</p>
-                                    <p class="truncate text-xs text-cerulean-600">{{$expense->category?->name }}</p>
+                                    <p class="truncate text-sm font-semibold text-red-600">{{ $owe->debuteur?->user?->name ?? 'Member' }}</p>
+                                    <p class="truncate text-xs text-cerulean-600">owes</p>
+                                    <p class="truncate text-sm font-semibold text-green-600">{{ $owe->crediteur?->user?->name ?? 'Member' }}</p>
                                 </div>
-                                <p class="ml-auto text-sm font-semibold text-cerulean-800">{{$expense->amount}} MAD</p>
+                                <div class="ml-auto text-right">
+                                    <p class="text-sm font-semibold text-cerulean-800">{{ $owe->part }} MAD</p>
+                                    <form action="{{ route('split.paid') }}" method="post" class="mt-2">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="owe_id" value="{{ $owe->id }}">
+                                        <button type="submit" class="rounded-lg border border-cerulean-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-cerulean-700 hover:bg-cerulean-100">Mark as paid</button>
+                                    </form>
+                                </div>
                             </div>
                         </article>
                     @empty
-                        <p>no expenses yet !</p>
+                        <p>no owes yet !</p>
                     @endforelse
-
-
                 </div>
             </aside>
         </div>
+
+        <section class="rounded-3xl border border-cerulean-200 bg-white p-5 shadow-sm md:p-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-semibold text-cerulean-800">Recent Expenses</h2>
+                <span class="rounded-full border border-cerulean-200 bg-cerulean-50 px-2.5 py-1 text-xs font-semibold text-cerulean-700">Live</span>
+            </div>
+            <p class="mt-2 text-xs text-cerulean-700">Amount, payer, and category</p>
+
+            <div class="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                @forelse($expenses as $expense)
+                    <article class="rounded-2xl border border-cerulean-200 bg-cerulean-50 p-3">
+                        <div class="flex items-center gap-3">
+                            <img src="{{ $expense->membership->user->avatar ? asset('storage/' . $expense->membership->user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($expense->membership->user->name) . '&background=0f766e&color=ffffff' }}" alt="Payer avatar" class="h-11 w-11 rounded-xl border border-cerulean-200 object-cover">
+                            <div class="min-w-0">
+                                <p class="truncate text-sm font-semibold text-cerulean-800">{{$expense->membership->user->name}}</p>
+                                <p class="truncate text-xs text-cerulean-600">{{$expense->category?->name }}</p>
+                            </div>
+                            <p class="ml-auto text-sm font-semibold text-cerulean-800">{{$expense->amount}} MAD</p>
+                        </div>
+                    </article>
+                @empty
+                    <p>no expenses yet !</p>
+                @endforelse
+            </div>
+        </section>
     </div>
 
     <div id="add-category-modal" class="fixed hidden inset-0 z-50 items-center justify-center bg-cerulean-900/50 p-4">
