@@ -134,6 +134,11 @@ class OwnerController extends Controller
         if($member->colocation->id != $owner->colocation->id || $owner->id === $member->id || $member->status === 'inactive'){
             abort(404);
         }
+        if ($member->balance<0){
+            $member->user->reputation -= 1;
+        } else {
+            $member->user->reputation += 1;
+        }
         $this->kickEdits($member,$owner);
         $member->update(['status' => 'inactive',
             'left_at'=>now()
