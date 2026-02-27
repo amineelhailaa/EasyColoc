@@ -7,6 +7,7 @@ use App\Models\Colocation;
 use App\Models\Membership;
 use App\Models\Split;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class OwnerController extends Controller
@@ -146,12 +147,63 @@ class OwnerController extends Controller
     // my functions
 
 
-    public function kickEdits(Membership $mouad, Membership $owner)
+    public function kickEdits(Membership $member, Membership $owner)
     {
 
 
-       $owner->balance += $mouad->balance;
-       $owner->save();
+       $colocation = $owner->colocation;
+
+
+      $members =  $owner->colocation->memberships()->where('status','active')->wherenotIn('id',[$owner->id,$member->id])->get();
+
+      foreach($members as $m){
+
+          $net = $m->splitsAsCrediteur()->where('debuteur_id',$owner->id)->where('status','=','unpaid')->sum('part')
+              - $owner->splitsAsCrediteur()->where('debuteur_id',$m->id)->where('status','=','unpaid')->sum('part')
+              +$m->splitsAsCrediteur()->where('debuteur_id',$member->id)->where('status','=','unpaid')->sum('part')
+              - $member->splitsAsCrediteur()->where('debuteur_id',$m->id)->where('status','=','unpaid')->sum('part');
+
+          $this->deleteSplitsBetweenTwo($member,$m);
+          $this->deleteSplitsBetweenTwo($owner,$m);
+
+          if($net != 0){
+              if($net > 0){
+                  $id1 = $owner->id;
+                  $id2 = $m->id;
+              } else if($net<0) {
+                  $id1 = $m->id;
+                  $id2 = $owner->id;
+              }
+              $colocation->splits()->create([
+                  'part' => abs($net),
+                  'debuteur_id' => $id1,
+                  'crediteur_id' => $id2,
+              ]);
+          }
+
+
+      }
+
+      $this->deleteSplitsBetweenTwo($owner,$member);
+
+
+      foreach ($members as $n) {
+          $n->balance = $n->splitsAsCrediteur()->where('status','=','unpaid')->sum('part') - $n->splitsAsDebuteur()->where('status','=','unpaid')->sum('part');
+          $n->save();
+      }
+      $owner->balance= $owner->splitsAsCrediteur()->where('status','=','unpaid')->sum('part') - $owner->splitsAsDebuteur()->where('status','=','unpaid')->sum('part');
+      $owner->save();
+
+
+
+
+
+
+
+
+
+
+
 //
 ////        $owner->balance = $owner->splitsAsCrediteur()->sum('part')->get() - $owner->splitsAsDebuteur()->sum('part')->get();
 //
@@ -203,11 +255,26 @@ class OwnerController extends Controller
 //
 //          }
 //
-//      }
+      }
 //
 //
 //
 //
 //      return redirect()->back();
-    }
+
+
+        function deleteSplitsBetweenTwo($m1,$m2)
+        {
+            Split::where(function (Builder $query) use ($m1,$m2) {
+                $query->where('crediteur_id',$m1->id)
+                    ->where('debuteur_id',$m2->id)->where('status','=','unpaid');
+            })->orWhere(
+                function (Builder $query) use ($m1,$m2) {
+                    $query->where('crediteur_id',$m2->id)
+                        ->where('debuteur_id',$m1->id)->where('status','=','unpaid');}
+            )->delete();
+        }
+
+
+
 }
