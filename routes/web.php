@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ResetPasswordController;
@@ -10,6 +11,9 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ColocationController;
 use App\Http\Controllers\OwnerController;
+
+
+
 Route::view('/', 'main')->name('main');
 
 
@@ -38,25 +42,66 @@ Route::middleware('guest')->group(function () {
 });
 
 
-//no membership roles
-Route::middleware('notMember')->group(function () {
-    Route::view('/home','welcome')->name('home');
-    Route::resource('colocation', ColocationController::class)->only(['store','create','index']);
-
-
-
-    //invitation
-    Route::get('/invitation/link/{token}',[InvitationController::class,'show'])->name('invitation.show');
-    Route::post('/invitation/accept',[InvitationController::class,'accept'])->name('invitation.accept');
-    Route::post('/invitation/decline',[InvitationController::class,'decline'])->name('invitation.decline');
-
-});
 
 
 
 
 
-Route::middleware('auth')->group(function (){
+
+Route::middleware('auth','not.banned')->group(function (){
+
+//    no membership roles
+    Route::middleware('notMember')->group(function () {
+        Route::view('/home','welcome')->name('home');
+        Route::resource('colocation', ColocationController::class)->only(['store','create','index']);
+        //invitation
+        Route::get('/invitation/link/{token}',[InvitationController::class,'show'])->name('invitation.show');
+        Route::post('/invitation/accept',[InvitationController::class,'accept'])->name('invitation.accept');
+        Route::post('/invitation/decline',[InvitationController::class,'decline'])->name('invitation.decline');
+    });
+
+
+    //member
+    Route::middleware('membership.role:member')->group(function () {
+//    Route::resource('colocation', ColocationController::class)->only('index');
+        Route::get('/member/dashboard',[MemberController::class,'index'])->name('member.dashboard');
+        Route::post('/member/quit',[MemberController::class,'quitColocation'])->name('member.quit');
+    });
+
+
+
+    //owner
+    Route::middleware('membership.role:owner')->group(function () {
+        Route::get('/owner/dashboard',[OwnerController::class, 'index'])->name('owner.dashboard');
+        //invitation
+        Route::post('/invitation/send',[InvitationController::class,'store'])->name('invitation.send');
+        //categories
+        Route::post('/owner/category',[OwnerController::class,'store'])->name('owner.category.add');
+        Route::delete('/owner/category/{category}',[OwnerController::class,'destroy'])->name('owner.category.delete');
+        //kick
+        Route::delete('/owner/kick/{member}',[OwnerController::class,'kickMember'])->name('owner.kick');
+    });
+
+ //member and owner
+    Route::middleware('membership.role:owner,member')->group(function () {
+        // aa expense
+        Route::post('/expense/add',[\App\Http\Controllers\ExpenseController::class,'store'])->name('expense.add');
+//    Route::resource('colocation', ColocationController::class)->except(['store','index','create']);
+
+
+        //markaspaid
+        Route::patch('/split/paid',[SplitController::class,'marquerPayee'])->name('split.paid');
+    });
+
+
+//admin
+    Route::middleware('admin')->group(function () {
+        Route::get('/admin',[AdminController::class,'index'])->name('admin.dashboard');
+        Route::patch('/admin/ban/{user}',[AdminController::class,'banUser'])->name('admin.ban');
+        Route::patch('/admin/unban/{user}',[AdminController::class,'unbanUser'])->name('admin.unban');
+    });
+
+    //every auth one
     Route::post('/logout', [AuthentificationController::class, 'logout'])->name('logout');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.view');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -74,46 +119,14 @@ Route::middleware('auth')->group(function (){
 
 
 
-//member
-Route::middleware('membership.role:member')->group(function () {
-//    Route::resource('colocation', ColocationController::class)->only('index');
-    Route::get('/member/dashboard',[MemberController::class,'index'])->name('member.dashboard');
-    Route::post('/member/quit',[MemberController::class,'quitColocation'])->name('member.quit');
-});
-
-//owner
-Route::middleware('membership.role:owner')->group(function () {
-    Route::get('/owner/dashboard',[OwnerController::class, 'index'])->name('owner.dashboard');
-
-    //invitation
-    Route::post('/invitation/send',[InvitationController::class,'store'])->name('invitation.send');
-
-
-    //categories
-    Route::post('/owner/category',[OwnerController::class,'store'])->name('owner.category.add');
-    Route::delete('/owner/category/{category}',[OwnerController::class,'destroy'])->name('owner.category.delete');
-
-    //kick
-    Route::delete('/owner/kick/{member}',[OwnerController::class,'kickMember'])->name('owner.kick');
-});
 
 
 
 
-//member and owner
-
-Route::middleware('membership.role:owner,member')->group(function () {
-    // aa expense
-    Route::post('/expense/add',[\App\Http\Controllers\ExpenseController::class,'store'])->name('expense.add');
-//    Route::resource('colocation', ColocationController::class)->except(['store','index','create']);
 
 
-    //markaspaid
-    Route::patch('/split/paid',[SplitController::class,'marquerPayee'])->name('split.paid');
-});
 
 
-//admin
-Route::middleware('admin')->group(function () {
 
-});
+
+

@@ -14,7 +14,7 @@ class AuthentificationController extends Controller
     }
 
     public function login(LoginRequest $request){
-        Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember());
+        Auth::attempt(['email' => $request->email, 'password' => $request->password,'ban'=>0], $request->remember());
         $request->session()->regenerate();
         return redirect()->intended(route('home'));
     }

@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class NoActiveMembership
+class NotBannedMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,19 +16,12 @@ class NoActiveMembership
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
-        if(!$user ){
-            return redirect()->route('login');
+        if($user->ban){
+            auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+           return  redirect()->route('login');
         }
-
-        $membership = $user->membership;
-
-        if($membership){
-            if($membership->role == 'owner'){
-                return redirect()->route('owner.dashboard');
-            }
-            return redirect()->route('member.dashboard');
-        }
-
         return $next($request);
     }
 }
