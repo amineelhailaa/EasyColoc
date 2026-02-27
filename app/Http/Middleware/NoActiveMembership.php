@@ -19,7 +19,7 @@ class NoActiveMembership
         if(!$user){
             return redirect()->route('login');
         }
-        $membership = $user->membership()->where('status', 'active')->first();
+        $membership = $user->membership;
 
         if($membership){
             if($membership->role == 'owner'){

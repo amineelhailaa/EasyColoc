@@ -92,6 +92,9 @@ Route::middleware('membership.role:owner')->group(function () {
     //categories
     Route::post('/owner/category',[OwnerController::class,'store'])->name('owner.category.add');
     Route::delete('/owner/category/{category}',[OwnerController::class,'destroy'])->name('owner.category.delete');
+
+    //kick
+    Route::delete('/owner/kick/{member}',[OwnerController::class,'kickMember'])->name('owner.kick');
 });
 
 

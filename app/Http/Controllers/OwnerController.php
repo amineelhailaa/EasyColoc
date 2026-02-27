@@ -126,6 +126,19 @@ class OwnerController extends Controller
         return redirect()->back();
     }
 
+    public function KickMember(Membership $member)
+    {
+        $owner = auth()->user()->membership;
+        if($member->colocation->id != $owner->colocation->id || $owner->id === $member->id || $member->status === 'inactive'){
+            abort(404);
+        }
+        $this->kickEdits($member,$owner);
+        $member->update(['status' => 'inactive',
+            'left_at'=>now()
+        ]);
+        return redirect()->back();
+    }
+
 
 
 
@@ -133,64 +146,68 @@ class OwnerController extends Controller
     // my functions
 
 
-    public function kickMouad(User $mouad, Membership $owner)
+    public function kickEdits(Membership $mouad, Membership $owner)
     {
 
-//        $owner->balance = $owner->splitsAsCrediteur()->sum('part')->get() - $owner->splitsAsDebuteur()->sum('part')->get();
 
-
-        //change my status
-      $mouad->membership()->update([
-          'status' => 'inactive',
-          'left_at' => now(),
-      ]);
-
-
-
-      $mouad->membership->splitsAsCrediteur()->update(['crediteur_id' => $owner->id]);
-
-      $asDebuteurSplits = $mouad->membership->splitsAsDebuteur()->where('status','unpaid')->get();
-      $asCrediteurSplits = $mouad->membership->splitsAsCrediteur()->where('status','unpaid')->get();
-
-
-
-
-
-
-
-      foreach ($asCrediteurSplits as $split) {
-          $exist = $owner->splitsAsCrediteur()->where(['debuteur_id',$split->debuteur_id])->first();
-          if ($exist) {
-              $exist->part += $split->part;
-              $exist->save();
-              $split->delete();
-          } else {
-              $split->crediteur_id = $owner->id;
-              $split->save();
-          }
-
-          $owner->balance += $split->part;
-      }
-
-      foreach ($asDebuteurSplits as $split) {
-          $exist = $owner->splitsAsDebuteur()->where(['crediteur_id',$split->crediteur_id])->first();
-
-          if ($exist) {
-              if($exist->part < $split->part){
-
-              } else {
-                  $exist->part -= $split->part;
-                  $exist->save();
-
-              }
-
-          }
-
-      }
-
-
-
-
-      return redirect()->back();
+       $owner->balance += $mouad->balance;
+       $owner->save();
+//
+////        $owner->balance = $owner->splitsAsCrediteur()->sum('part')->get() - $owner->splitsAsDebuteur()->sum('part')->get();
+//
+//
+//        //change my status
+//      $mouad->membership()->update([
+//          'status' => 'inactive',
+//          'left_at' => now(),
+//      ]);
+//
+//
+//
+//      $mouad->membership->splitsAsCrediteur()->update(['crediteur_id' => $owner->id]);
+//
+//      $asDebuteurSplits = $mouad->membership->splitsAsDebuteur()->where('status','unpaid')->get();
+//      $asCrediteurSplits = $mouad->membership->splitsAsCrediteur()->where('status','unpaid')->get();
+//
+//
+//
+//
+//
+//
+//
+//      foreach ($asCrediteurSplits as $split) {
+//          $exist = $owner->splitsAsCrediteur()->where(['debuteur_id',$split->debuteur_id])->first();
+//          if ($exist) {
+//              $exist->part += $split->part;
+//              $exist->save();
+//              $split->delete();
+//          } else {
+//              $split->crediteur_id = $owner->id;
+//              $split->save();
+//          }
+//
+//          $owner->balance += $split->part;
+//      }
+//
+//      foreach ($asDebuteurSplits as $split) {
+//          $exist = $owner->splitsAsDebuteur()->where(['crediteur_id',$split->crediteur_id])->first();
+//
+//          if ($exist) {
+//              if($exist->part < $split->part){
+//
+//              } else {
+//                  $exist->part -= $split->part;
+//                  $exist->save();
+//
+//              }
+//
+//          }
+//
+//      }
+//
+//
+//
+//
+//      return redirect()->back();
     }
 }

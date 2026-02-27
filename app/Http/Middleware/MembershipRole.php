@@ -19,7 +19,7 @@ class MembershipRole
         if (!$user){
             return redirect()->route('login');
         }
-        if(!$user->membership && $user->membership->status == 'active'){
+        if(!$user->membership ){ //membership is always active as the relation imade in controller
             return redirect()->route('colocation.create');
         }
         if (!empty($roles) && !in_array($user->membership->role, $roles)){

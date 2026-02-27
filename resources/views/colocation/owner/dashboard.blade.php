@@ -142,13 +142,17 @@
                             </div>
 
                             <div class="min-w-0">
-                                <p class="truncate text-sm font-semibold text-cerulean-800">Member Name</p>
+                                <p class="truncate text-sm font-semibold text-cerulean-800">{{ $member->user->name }}</p>
                                 <p class="truncate text-xs text-cerulean-600">{{$member->role}}</p>
                             </div>
 
-                            <button type="button" class="ml-auto rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50">
-                                Remove
-                            </button>
+                            <form method="POST" action="{{ route('owner.kick', $member) }}" class="ml-auto" onsubmit="return confirm('Are you sure you want to remove this member?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50">
+                                    Remove
+                                </button>
+                            </form>
                         </article>
                         @empty
                             <div>you are the only member invite someone !</div>
