@@ -37,9 +37,8 @@ class ExpenseController extends Controller
 
 
         $colocation  = auth()->user()->membership->colocation;
-        if($colocation!= Membership::find($request->membership_id)->colocation){
-            //return cuz he is not my groupe ms how to show the error ?
-
+        if($colocation->id!= Membership::find($request->membership_id)->colocation->id){
+            abort(403);
         }
 
         $expenseService->createwithSplits($request);

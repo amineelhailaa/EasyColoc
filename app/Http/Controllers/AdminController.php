@@ -47,11 +47,11 @@ class AdminController extends Controller
                 }
             }
 
+            $owner = $membership->colocation->memberships()->where('role','owner')->where('status','active')->first();
 
-
-                $service->kickEdits($membership , $membership->colocation->memberships()->where('role','owner')->where('status','active')->first());
-
-
+                if($owner){
+                    $service->kickEdits($membership , $owner);
+                }
 
             $user->memberships()->delete();
         }

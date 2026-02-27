@@ -14,9 +14,9 @@ class ColocationController extends Controller
     public function index()
     {
 //        dd(auth()->user()->membership); aintnowawy notwrkig switching to relationship builder
-        if (auth()->user()->membership?->colocation == null){ //adding? to avoid read properit on nul error
-            return redirect()->route('colocation.create');
-        }
+//        if (auth()->user()->membership?->colocation == null){ //adding? to avoid read properit on nul error
+//            return redirect()->route('colocation.create');
+//        }
 //        return view('colocation.owner.dashboard');
     }
 
