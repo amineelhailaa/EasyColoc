@@ -23,11 +23,12 @@ class OwnerController extends Controller
         $year = $request->get("year");
         $month = $request->get("month");
         //expenses
+//        dd($year, $month);
         if($year && $month){
             $expenses = $colocation->expenses()->with('membership.user','category')
-                ->whereYear('date', $year)
-                ->whereMonth('date', $month)
+                ->whereYear('date', $year)->whereMonth('date', $month)
                 ->latest('date')->get();
+//            dd($expenses, $year, $month);
         } else {
             $expenses= $colocation->expenses()->with('membership.user','category')
                 ->latest()->limit(5)->get();
