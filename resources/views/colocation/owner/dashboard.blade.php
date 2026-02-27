@@ -25,6 +25,13 @@
                     >
                         Add Expense
                     </button>
+                    <form method="POST" action="{{ route('owner.colocation.delete') }}" onsubmit="return confirm('Are you sure you want to delete this colocation?');">
+                        @csrf
+                        @method('DELETE')
+                        <x-button variant="secondary" class="!h-11 !w-auto px-4 text-sm">
+                            Delete Colocation
+                        </x-button>
+                    </form>
                 </div>
             </div>
         </section>

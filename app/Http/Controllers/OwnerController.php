@@ -128,6 +128,15 @@ class OwnerController extends Controller
         return redirect()->back();
     }
 
+
+    public function annulerColocation(Request $request){
+       $owner=$request->user()->membership;
+       $owner->colocation->update([
+       'status','inactive']);
+       $owner->colocation->memberships()->update(['status'=>'inactive ']);
+       return redirect()->back();
+    }
+
     public function KickMember(Membership $member)
     {
         $owner = auth()->user()->membership;

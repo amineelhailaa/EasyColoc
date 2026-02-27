@@ -80,6 +80,8 @@ Route::middleware('auth','not.banned')->group(function (){
         Route::delete('/owner/category/{category}',[OwnerController::class,'destroy'])->name('owner.category.delete');
         //kick
         Route::delete('/owner/kick/{member}',[OwnerController::class,'kickMember'])->name('owner.kick');
+
+        Route::delete('/owner/colocation/delete',[OwnerController::class,'annulerColocation'])->name('owner.colocation.delete');
     });
 
  //member and owner
