@@ -14,7 +14,9 @@ class AuthentificationController extends Controller
     }
 
     public function login(LoginRequest $request){
-        Auth::attempt(['email' => $request->email, 'password' => $request->password,'ban'=>0], $request->remember());
+        if(!Auth::attempt(['email' => $request->email, 'password' => $request->password,'ban'=>0], $request->remember())){
+            return back()->withErrors(['email'=>'verify emailor pass and try again ']);
+        }
         $request->session()->regenerate();
         if(auth()->user()->role === 'admin'){
             return redirect()->route('admin.dashboard');

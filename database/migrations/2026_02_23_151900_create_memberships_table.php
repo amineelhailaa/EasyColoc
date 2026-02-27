@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('colocation_id');
             $table->timestamp('left_at')->nullable();
-            $table->bigInteger('balance')->default(0);
+            $table->decimal('balance',10,2)->default(0);
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->enum('role',['owner','member'])->default('member');
             $table->foreign('user_id')->references('id')->on('users');
