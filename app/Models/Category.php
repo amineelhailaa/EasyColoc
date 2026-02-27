@@ -18,8 +18,8 @@ class Category extends Model
     }
 
 
-    public function expenses(): belongsTo {
-        return $this->belongsTo(Expense::class,'category_id');
+    public function expenses(): HasMany {
+        return $this->hasMany(Expense::class,'category_id');
     }
 
 
