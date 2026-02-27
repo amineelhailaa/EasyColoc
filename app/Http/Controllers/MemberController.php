@@ -47,6 +47,9 @@ class MemberController extends Controller
 
     public function quitColocation(Request $request){
 
+
+
+
         $user = $request->user();
         $membership = $user->membership;
         $membership->status = 'inactive';

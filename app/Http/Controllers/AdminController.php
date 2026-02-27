@@ -7,6 +7,7 @@ use App\Models\Expense;
 use App\Models\Membership;
 use App\Models\User;
 use App\Services\MemberExitService;
+use App\Services\SplitService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -32,7 +33,7 @@ class AdminController extends Controller
             'usersWithNoMembership'));
     }
 
-    public function banUser(User $user, MemberExitService $service){
+    public function banUser(User $user, SplitService $service){
         $membership = $user->membership;
         if($membership){
             $colocation = $membership->colocation;
@@ -46,7 +47,9 @@ class AdminController extends Controller
                 }
             }
 
-                $service->quit($membership);
+
+
+                $service->kickEdits($membership , $membership->colocation->memberships()->where('role','owner')->where('status','active')->first());
 
 
 
