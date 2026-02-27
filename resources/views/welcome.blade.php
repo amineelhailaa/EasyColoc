@@ -30,7 +30,7 @@
             </article>
 
             <article class="rounded-2xl border border-cerulean-200 bg-cerulean-50 p-6">
-                <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-cerulean-700 text-xl text-white">↗</span>
+                <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-cerulean-700 text-xl text-white">#</span>
                 <h2 class="mt-5 text-2xl font-semibold text-cerulean-900">Join by Link</h2>
                 <p class="mt-3 text-sm text-cerulean-700">
                     Paste your invitation link and join an existing group in seconds.

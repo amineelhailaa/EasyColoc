@@ -474,7 +474,7 @@
                         deleteCategoryName.textContent = categoryName || 'this category';
                         if (deleteCategoryForm) {
                             const template = deleteCategoryForm.dataset.actionTemplate || '';
-                            deleteCategoryForm.action = template.replace('__CATEGORY__', categoryId);
+                            deleteCategoryForm.action = template.replace('__CATEGORY__', categoryId); //to delete category php&js
                         }
                     }
 
