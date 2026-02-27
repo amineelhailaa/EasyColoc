@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('invitations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('colocation_id');
-            $table->foreign('colocation_id')->references('id')->on('colocations');
+            $table->foreign('colocation_id')->references('id')->on('colocations')->cascadeOnDelete();
             $table->string('email');
             $table->string('token');
             $table->enum('status',['pending','accepted','declined'])->default('pending');

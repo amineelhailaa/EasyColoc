@@ -32,11 +32,11 @@ class MemberController extends Controller
 
 
     public function quitColocation(Request $request){
+
         $user = $request->user();
         $membership = $user->membership;
         $membership->status = 'inactive';
         $membership->left_at = now();
-
         if ($membership->balance < 0){
             $user->reputation -= 1 ;
         }
@@ -44,16 +44,19 @@ class MemberController extends Controller
             $user->reputation += 1 ;
         }
         $user->save();
-
         $membership->splitsAsDebuteur()->update([
             'status' => 'paid'
         ]);
-
         $membership->splitsAsCrediteur()->update([
             'status' => 'paid'
         ]);
-
         $membership->save();
+       $members = $membership->colocation->memberships()->where('status','active')->get();
+        foreach ($members as $n) {
+            $n->balance = $n->splitsAsCrediteur()->where('status','=','unpaid')->sum('part') - $n->splitsAsDebuteur()->where('status','=','unpaid')->sum('part');
+            $n->save();
+        }
+
         return redirect()->route('home');
     }
 }

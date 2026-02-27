@@ -20,7 +20,7 @@ return new class extends Migration
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->enum('role',['owner','member'])->default('member');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('colocation_id')->references('id')->on('colocations');
+            $table->foreign('colocation_id')->references('id')->on('colocations')->cascadeOnDelete();
             $table->timestamps();
             $table->unique(['user_id', 'colocation_id']);
         });

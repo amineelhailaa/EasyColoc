@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->unsignedBigInteger('colocation_id');
-            $table->foreign('colocation_id')->references('id')->on('colocations');
+            $table->foreign('colocation_id')->references('id')->on('colocations')->cascadeOnDelete();
             $table->timestamps();
         });
     }

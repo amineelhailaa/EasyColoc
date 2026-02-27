@@ -6,6 +6,7 @@ use App\Models\Colocation;
 use App\Models\Expense;
 use App\Models\Membership;
 use App\Models\User;
+use App\Services\MemberExitService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -31,17 +32,27 @@ class AdminController extends Controller
             'usersWithNoMembership'));
     }
 
-    public function banUser(User $user){
+    public function banUser(User $user, MemberExitService $service){
         $membership = $user->membership;
-        if ($membership?->role === 'owner'){
+        if($membership){
             $colocation = $membership->colocation;
-          $member =  $colocation->memberships()->where('status', 'active')->where('id','!=',$membership->id)
-                ->first();
-          if($member){
-              $member->role = 'owner';
-          }
-            $user->membership()->delete();
+            if ($membership?->role === 'owner'){
+                $member =  $colocation->memberships()->where('status', 'active')->where('id','!=',$membership->id)
+                    ->first();
+
+                if($member){
+                    $member->role = 'owner';
+                    $member->save();
+                }
+            }
+
+                $service->quit($membership);
+
+
+
+            $user->memberships()->delete();
         }
+
         $user->update(['ban' => 1]);
 //        dd($user);
 

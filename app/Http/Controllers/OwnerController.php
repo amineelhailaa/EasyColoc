@@ -155,8 +155,6 @@ class OwnerController extends Controller
 
     public function kickEdits(Membership $member, Membership $owner)
     {
-
-
        $colocation = $owner->colocation;
 
 
