@@ -32,6 +32,6 @@ class RegisterController extends Controller
             $user->save();
         }
     Auth::login($user);
-    return redirect()->route('login');
+    return redirect()->intended(route('home'));
     }
 }

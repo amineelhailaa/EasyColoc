@@ -16,9 +16,7 @@ class NoActiveMembership
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
-        if(!$user ){
-            return redirect()->route('login');
-        }
+
 
         $membership = $user->membership;
 
