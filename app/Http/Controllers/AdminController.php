@@ -53,7 +53,7 @@ class AdminController extends Controller
                     $service->kickEdits($membership , $owner);
                 }
 
-            $user->memberships()->delete();
+            $user->memberships()->update(['status'=>'inactive']);
         }
 
         $user->update(['ban' => 1]);
