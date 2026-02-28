@@ -50,7 +50,7 @@ class MemberController extends Controller
 
         $user = $request->user();
         $membership = $user->membership;
-       $owner = $membership->colocation->memberships()->where('role','owner')->first();
+       $owner = $membership->colocation->memberships()->where('role','owner')->where('status','active')->first(); // forgot second check
         $service->kickEdits($membership, $owner);
 
         return redirect()->route('home');
