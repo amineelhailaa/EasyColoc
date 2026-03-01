@@ -30,12 +30,22 @@
                 @auth
                     @if(auth()->user()->role==='admin')
                         <li>
-                            <a href="{{ route('admin.dashboard') }}" class="rounded-xl px-3 py-2 text-sm font-semibold text-cerulean-700 hover:bg-cerulean-100">Admin Dashboard</a>
+                            <a
+                                href="{{ route('admin.dashboard') }}"
+                                class="rounded-xl px-3 py-2 text-sm font-semibold {{ request()->routeIs('admin.dashboard') ? 'bg-cerulean-700 text-white hover:bg-cerulean-800' : 'text-cerulean-700 hover:bg-cerulean-100' }}"
+                            >
+                                Admin Dashboard
+                            </a>
                         </li>
                     @endif
 
                     <li>
-                        <a href="{{ route('profile.view') }}" class="rounded-xl px-3 py-2 text-sm font-semibold text-cerulean-700 hover:bg-cerulean-100">Profile</a>
+                        <a
+                            href="{{ route('profile.view') }}"
+                            class="rounded-xl px-3 py-2 text-sm font-semibold {{ request()->routeIs('profile.*') ? 'bg-cerulean-700 text-white hover:bg-cerulean-800' : 'text-cerulean-700 hover:bg-cerulean-100' }}"
+                        >
+                            Profile
+                        </a>
                     </li>
                     <li>
                         <form method="post" action="{{ route('logout') }}">
@@ -53,7 +63,14 @@
         <div id="mobile-menu" class="mt-3 hidden rounded-2xl border border-cerulean-200 bg-white p-2 md:hidden">
             <ul class="space-y-1">
                 @auth
-                    <li><a href="{{ route('profile.view') }}" class="block rounded-xl px-3 py-2 text-sm font-semibold text-cerulean-700 hover:bg-cerulean-100">Profile</a></li>
+                    <li>
+                        <a
+                            href="{{ route('profile.view') }}"
+                            class="block rounded-xl px-3 py-2 text-sm font-semibold {{ request()->routeIs('profile.*') ? 'bg-cerulean-700 text-white hover:bg-cerulean-800' : 'text-cerulean-700 hover:bg-cerulean-100' }}"
+                        >
+                            Profile
+                        </a>
+                    </li>
                     <li>
                         <form method="post" action="{{ route('logout') }}">
                             @csrf
