@@ -22,7 +22,7 @@ class AdminController extends Controller
         $colocations = Colocation::all();
         $chiffreDaffaire = Expense::sum('amount');
         $usersWithMembershipActive = Membership::where('status', 'active')->count();
-        $usersWithNoMembership = $users->count() - $usersWithMembershipActive;
+        $usersWithNoMembership = User::count() - $usersWithMembershipActive;
         return view('admin.index', compact(
             'admin',
             'membership',

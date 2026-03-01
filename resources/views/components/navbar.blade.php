@@ -28,6 +28,12 @@
 
             <ul class="hidden items-center gap-2 md:flex">
                 @auth
+                    @if(auth()->user()->role==='admin')
+                        <li>
+                            <a href="{{ route('admin.dashboard') }}" class="rounded-xl px-3 py-2 text-sm font-semibold text-cerulean-700 hover:bg-cerulean-100">Admin Dashboard</a>
+                        </li>
+                    @endif
+
                     <li>
                         <a href="{{ route('profile.view') }}" class="rounded-xl px-3 py-2 text-sm font-semibold text-cerulean-700 hover:bg-cerulean-100">Profile</a>
                     </li>
