@@ -91,18 +91,10 @@
                         <article class="grid gap-3 rounded-2xl border border-cerulean-200 bg-cerulean-50 p-4 sm:grid-cols-[1fr_auto] sm:items-center">
                             <div>
                                 <p class="text-sm font-semibold text-cerulean-800">{{ $category->name }}</p>
-                                <p class="text-xs text-cerulean-600">Category for groceries and shared meals</p>
                             </div>
 
                             <div class="flex gap-2">
-                                <button
-                                    type="button"
-                                    data-open-modal="edit-category-modal"
-                                    data-category-name="{{ $category->name }}"
-                                    class="rounded-lg border border-cerulean-300 bg-white px-3 py-1.5 text-xs font-semibold text-cerulean-700 hover:bg-cerulean-50"
-                                >
-                                    Edit
-                                </button>
+
                                 <button
                                     type="button"
                                     data-open-modal="delete-category-modal"
