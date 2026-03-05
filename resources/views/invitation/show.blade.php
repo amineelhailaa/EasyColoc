@@ -1,4 +1,6 @@
-@php($title = 'Invitation - EasyColoc')
+@php
+    $title = 'Invitation - EasyColoc';
+@endphp
 
 @extends('layouts.app')
 

@@ -48,6 +48,8 @@ class InvitationController extends Controller
             'email' => $data['email'],
             'colocation_id' => $colocation->id,
         ]);
+
+
         $urlToSend = URL::temporarySignedRoute(
             'invitation.show', now()->addDays(1), ['token' => $token , 'email' => $data['email']]
         );

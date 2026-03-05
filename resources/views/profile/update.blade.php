@@ -1,4 +1,6 @@
-@php($title = 'Update Profile — EasyColoc')
+@php
+    $title = 'Update Profile — EasyColoc';
+@endphp
 
 @extends('layouts.app')
 

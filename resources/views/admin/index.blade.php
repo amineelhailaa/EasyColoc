@@ -1,4 +1,6 @@
-@php($title = 'Admin Dashboard - EasyColoc')
+@php
+    $title = 'Admin Dashboard - EasyColoc';
+@endphp
 
 @extends('layouts.app')
 

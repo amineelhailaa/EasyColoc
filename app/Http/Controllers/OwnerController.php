@@ -39,7 +39,12 @@ class OwnerController extends Controller
         $totalExpenses = $colocation->expenses()->count();
 
         //members
-        $members = $colocation->memberships()->with('user')->where('status','active')->where('user_id','!=',auth()->id())->get();
+        $members = $colocation->memberships()
+            ->with('user')
+            ->withSum('expenses as total_paid_expenses', 'amount')
+            ->where('status','active')
+            ->where('user_id','!=',auth()->id())
+            ->get();
         $totalMembers = $members->count()+1;
 
         //categories
@@ -50,8 +55,44 @@ class OwnerController extends Controller
         //adding reputation
         $reputation = auth()->user()->reputation;
 
+        //chart
+        $today = now()->startOfDay();
+        $start = $today->copy()->subDays(29);
+
+        $dta = $colocation->expenses()
+            ->selectRaw('DATE(date) as day, SUM(amount) as total')
+            ->whereBetween('date', [$start->toDateString(), $today->toDateString()])
+            ->groupBy('day')
+            ->orderBy('day')
+            ->pluck('total', 'day');
+        $expenseLastDays = [];
+        $expenseDateLabels = [];
+        $expenseDateFullLabels = [];
+
+        for($i=29;$i>=0;$i--){
+            $date = $today->copy()->subDays($i);
+            $day = $date->toDateString();
+            $expenseLastDays[] = (float) ($dta[$day] ?? 0);
+            $expenseDateLabels[] = $date->format('M d');
+            $expenseDateFullLabels[] = $day;
+        }
+        $expenseLast30Total = array_sum($expenseLastDays);
+        $expensePeriodLabel = $start->format('M d') . ' - ' . $today->format('M d, Y');
+
+
+
+
+
+
+
+
         return view('colocation.owner.dashboard',compact(
             'membership',
+            'expenseLastDays',
+            'expenseDateLabels',
+            'expenseDateFullLabels',
+            'expenseLast30Total',
+            'expensePeriodLabel',
             'reputation',
             'myBalance',
             'colocation',

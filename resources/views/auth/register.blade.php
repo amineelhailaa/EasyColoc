@@ -1,4 +1,6 @@
-@php($title = 'Sign Up — EasyColoc')
+@php
+    $title = 'Sign Up — EasyColoc';
+@endphp
 
 @extends('layouts.guest')
 

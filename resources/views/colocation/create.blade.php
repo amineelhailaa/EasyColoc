@@ -1,4 +1,6 @@
-@php($title = 'Create Group - EasyColoc')
+@php
+    $title = 'Create Group - EasyColoc';
+@endphp
 
 @extends('layouts.app')
 

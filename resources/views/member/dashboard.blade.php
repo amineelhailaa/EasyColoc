@@ -1,4 +1,6 @@
-@php($title = 'Member Dashboard - EasyColoc')
+@php
+    $title = 'Member Dashboard - EasyColoc';
+@endphp
 
 @extends('layouts.app')
 
@@ -62,29 +64,31 @@
             </article>
         </section>
 
-        <section class="rounded-3xl border border-cerulean-200 bg-white p-5 shadow-sm md:p-6">
+        <section id="member-dashboard-expenses" class="rounded-2xl border border-cerulean-200 bg-white p-5 shadow-sm md:p-6">
             <div class="flex flex-wrap items-center justify-between gap-3">
-                <h2 class="text-xl font-semibold text-cerulean-800">Recent Group Expenses</h2>
-                <div class="flex items-center gap-2">
-                    <form action="{{ route('member.dashboard') }}" method="get" class="flex items-center gap-2">
-                        <select name="month" class="h-9 rounded-xl border border-cerulean-200 bg-white px-2 text-xs text-cerulean-800 outline-none focus:border-cerulean-600">
+                <h2 class="text-xl font-semibold text-cerulean-800">Recent Expenses</h2>
+                <div class="flex flex-wrap items-center gap-2">
+                    <form action="{{ route('member.dashboard') }}" method="get" class="flex flex-wrap items-center gap-2">
+                        <select name="month" class="h-9 rounded-lg border border-cerulean-200 bg-white px-2 text-xs text-cerulean-800 outline-none focus:border-cerulean-600">
                             <option value="">All months</option>
-                            @php($months = [1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug', 9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec'])
+                            @php
+                                $months = [1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug', 9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec'];
+                            @endphp
                             @foreach($months as $value => $label)
                                 <option value="{{ $value }}" @selected((int) request('month') === $value)>{{ $label }}</option>
                             @endforeach
                         </select>
 
-                        <select name="year" class="h-9 rounded-xl border border-cerulean-200 bg-white px-2 text-xs text-cerulean-800 outline-none focus:border-cerulean-600">
+                        <select name="year" class="h-9 rounded-lg border border-cerulean-200 bg-white px-2 text-xs text-cerulean-800 outline-none focus:border-cerulean-600">
                             <option value="2026" @selected((int) request('year', 2026) === 2026)>2026</option>
                         </select>
 
-                        <button type="submit" class="rounded-lg border border-cerulean-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-cerulean-700 hover:bg-cerulean-100">
+                        <button type="submit" class="rounded-md border border-cerulean-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-cerulean-700 hover:bg-cerulean-100">
                             Filter
                         </button>
 
                         @if(request('month') && request('year'))
-                            <a href="{{ route('member.dashboard') }}" class="rounded-lg border border-cerulean-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-cerulean-700 hover:bg-cerulean-100">
+                            <a href="{{ route('member.dashboard') }}" class="rounded-md border border-cerulean-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-cerulean-700 hover:bg-cerulean-100">
                                 Clear
                             </a>
                         @endif
@@ -94,32 +98,185 @@
                     </span>
                 </div>
             </div>
+            <p class="mt-2 text-xs text-cerulean-700">Amount, payer, and category</p>
 
-            <div class="mt-5 space-y-3">
+            @php
+                $staticParticipants = collect([
+                    [
+                        'name' => 'Participant A',
+                        'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode('Participant A') . '&background=0369a1&color=ffffff',
+                    ],
+                    [
+                        'name' => 'Participant B',
+                        'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode('Participant B') . '&background=0f766e&color=ffffff',
+                    ],
+                    [
+                        'name' => 'Participant C',
+                        'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode('Participant C') . '&background=334155&color=ffffff',
+                    ],
+                ]);
+
+                $expenseParticipants = collect([$membership])
+                    ->merge($members ?? collect())
+                    ->filter()
+                    ->unique('id')
+                    ->values()
+                    ->map(function ($participant) use ($membership) {
+                        $name = $participant->id === $membership->id ? 'Me' : ($participant->user->name ?? 'Member');
+                        $avatar = $participant->user->avatar
+                            ? asset('storage/' . $participant->user->avatar)
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=0369a1&color=ffffff';
+
+                        return [
+                            'name' => $name,
+                            'avatar' => $avatar,
+                        ];
+                    });
+                $participantsPreview = $expenseParticipants->isNotEmpty() ? $expenseParticipants : $staticParticipants;
+                $participantsCount = $participantsPreview->count();
+            @endphp
+
+            <div class="mt-5 space-y-2 md:hidden">
                 @forelse($expenses as $expense)
-                    <article class="rounded-2xl border border-cerulean-200 bg-cerulean-50 p-3">
+                    @php
+                        $payerName = $expense->membership?->user?->name ?? 'Payer';
+                        $payerAvatar = $expense->membership?->user?->avatar
+                            ? asset('storage/' . $expense->membership->user->avatar)
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($payerName) . '&background=0f766e&color=ffffff';
+                        $expenseTitle = $expense->title ?? 'Expense title';
+                        $expenseCategory = $expense->category?->name ?? 'Category';
+                        $expenseAmount = number_format((float) ($expense->amount ?? 0), 2, '.', '');
+                    @endphp
+                    <article class="rounded-xl border border-cerulean-200 bg-cerulean-50 p-3">
                         <div class="flex items-center gap-3">
-                            <div class="min-w-0">
-                                <p class="truncate text-sm font-semibold text-cerulean-800">{{ $expense->title }}</p>
-                                <p class="truncate text-xs text-cerulean-600">
-                                    {{ $expense->membership->user->name }}
-                                    • {{ $expense->category?->name }}
-                                </p>
+                            <img src="{{ $payerAvatar }}" alt="Payer avatar" class="h-10 w-10 rounded-lg border border-cerulean-200 object-cover">
+                            <div class="min-w-0 flex-1">
+                                <p class="truncate text-sm font-semibold text-cerulean-800">{{ $expenseTitle }}</p>
+                                <p class="truncate text-xs text-cerulean-600">{{ $payerName }} • {{ $expenseCategory }}</p>
                             </div>
-                            <p class="ml-auto text-sm font-semibold text-cerulean-800">{{ $expense->amount }} MAD</p>
+                            <p class="text-sm font-semibold text-cerulean-800">{{ $expenseAmount }} MAD</p>
                         </div>
                     </article>
                 @empty
-                    <p class="text-sm text-cerulean-700">No expenses yet.</p>
+                    <div class="rounded-xl border border-dashed border-cerulean-200 bg-cerulean-50 px-4 py-10 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-8 w-8 text-cerulean-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18"/>
+                            <path d="M3 12h18"/>
+                            <path d="M3 18h18"/>
+                        </svg>
+                        <p class="mt-3 text-sm font-semibold text-cerulean-800">No expenses yet</p>
+                        <p class="mt-1 text-xs text-cerulean-600">Start by adding your first shared expense.</p>
+                        <button type="button" data-open-modal="add-expense-modal" class="mt-4 rounded-lg bg-cerulean-700 px-4 py-2 text-xs font-semibold text-white hover:bg-cerulean-800">+ Add your first expense</button>
+                    </div>
                 @endforelse
             </div>
+
+            <div class="mt-5 hidden overflow-hidden rounded-xl border border-cerulean-200 bg-white md:block">
+                <div>
+                    <table class="min-w-full text-sm">
+                        <thead class="bg-cerulean-100/70 text-cerulean-800">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold">Payer</th>
+                                <th class="px-4 py-3 text-left font-semibold">Expense Name</th>
+                                <th class="px-4 py-3 text-left font-semibold">Category</th>
+                                <th class="px-4 py-3 text-left font-semibold">Amount</th>
+                                <th class="px-4 py-3 text-left font-semibold">Participants</th>
+                                <th class="px-4 py-3 text-left font-semibold">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-cerulean-100">
+                            @forelse($expenses as $expense)
+                                @php
+                                    $payerName = $expense->membership?->user?->name ?? 'Payer';
+                                    $payerAvatar = $expense->membership?->user?->avatar
+                                        ? asset('storage/' . $expense->membership->user->avatar)
+                                        : 'https://ui-avatars.com/api/?name=' . urlencode($payerName) . '&background=0f766e&color=ffffff';
+                                    $expenseTitle = $expense->title ?? 'Expense title';
+                                    $expenseCategory = $expense->category?->name ?? 'Category';
+                                    $expenseAmount = number_format((float) ($expense->amount ?? 0), 2, '.', '');
+                                    $expenseDate = $expense->date
+                                        ? \Illuminate\Support\Carbon::parse($expense->date)->format('M d, Y')
+                                        : 'Date -';
+                                @endphp
+                                <tr class="bg-white transition hover:bg-cerulean-50/60">
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center gap-3">
+                                            <img src="{{ $payerAvatar }}" alt="Payer avatar" class="h-10 w-10 rounded-lg border border-cerulean-200 object-cover">
+                                            <span class="font-medium text-cerulean-900">{{ $payerName }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 text-cerulean-800">{{ $expenseTitle }}</td>
+                                    <td class="px-4 py-3 text-cerulean-700">{{ $expenseCategory }}</td>
+                                    <td class="px-4 py-3 font-semibold text-cerulean-800">{{ $expenseAmount }} MAD</td>
+                                    <td class="px-4 py-3 text-cerulean-700">
+                                        <div class="relative inline-flex items-center">
+                                            <button
+                                                type="button"
+                                                data-member-hover-trigger
+                                                class="rounded-full border border-cerulean-200 bg-cerulean-50 px-2.5 py-1 text-xs font-semibold text-cerulean-700"
+                                            >
+                                                {{ $participantsCount ?? (($participantsPreview ?? collect())->count()) }}
+                                            </button>
+                                            <template data-member-hover-template>
+                                                <p class="px-1 pb-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-cerulean-600">Participants</p>
+                                                <div class="space-y-1 pr-1">
+                                                    @foreach(($participantsPreview ?? collect()) as $participant)
+                                                        <div class="flex items-center gap-2 rounded-md px-1 py-1">
+                                                            <img src="{{ $participant['avatar'] }}" alt="{{ $participant['name'] }} avatar" class="h-7 w-7 rounded-full border border-cerulean-200 object-cover">
+                                                            <span class="truncate text-xs font-medium text-cerulean-800">{{ $participant['name'] }}</span>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 text-cerulean-700">{{ $expenseDate }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-4 py-8 text-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-8 w-8 text-cerulean-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M3 6h18"/>
+                                            <path d="M3 12h18"/>
+                                            <path d="M3 18h18"/>
+                                        </svg>
+                                        <p class="mt-3 text-sm font-semibold text-cerulean-800">No expenses yet</p>
+                                        <p class="mt-1 text-xs text-cerulean-600">Start by adding your first shared expense.</p>
+                                        <button type="button" data-open-modal="add-expense-modal" class="mt-4 rounded-lg bg-cerulean-700 px-4 py-2 text-xs font-semibold text-white hover:bg-cerulean-800">+ Add your first expense</button>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            @php
+                $isExpensesPaginated = $expenses instanceof \Illuminate\Contracts\Pagination\Paginator;
+                $canShowTotal = $isExpensesPaginated && method_exists($expenses, 'total');
+            @endphp
+            @if($isExpensesPaginated && $expenses->hasPages())
+                <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    @if($canShowTotal)
+                        <p class="text-xs font-medium text-cerulean-700">
+                            Showing {{ $expenses->firstItem() ?? 0 }}-{{ $expenses->lastItem() ?? 0 }} of {{ $expenses->total() }}
+                        </p>
+                    @else
+                        <p class="text-xs font-medium text-cerulean-700">
+                            Page {{ $expenses->currentPage() }}
+                        </p>
+                    @endif
+                    <div class="w-full sm:w-auto">
+                        {{ $expenses->onEachSide(1)->links() }}
+                    </div>
+                </div>
+            @endif
         </section>
 
         <div class="grid gap-6 xl:grid-cols-2">
             <section class="rounded-3xl border border-cerulean-200 bg-white p-5 shadow-sm md:p-6">
                 <div class="flex items-center justify-between">
                     <h2 class="text-xl font-semibold text-cerulean-800">Members</h2>
-                    <span class="rounded-full border border-cerulean-200 bg-cerulean-50 px-2.5 py-1 text-xs font-semibold text-cerulean-700">Active</span>
                 </div>
 
                 <div class="mt-5 space-y-3">
@@ -143,7 +300,6 @@
             <section class="rounded-3xl border border-cerulean-200 bg-white p-5 shadow-sm md:p-6">
                 <div class="flex items-center justify-between">
                     <h2 class="text-xl font-semibold text-cerulean-800">Owes</h2>
-                    <span class="rounded-full border border-cerulean-200 bg-cerulean-50 px-2.5 py-1 text-xs font-semibold text-cerulean-700">Live</span>
                 </div>
                 <p class="mt-2 text-xs text-cerulean-700">Debtor is red, creditor is green</p>
 
@@ -158,11 +314,11 @@
                                 </div>
                                 <div class="ml-auto text-right">
                                     <p class="text-sm font-semibold text-cerulean-800">{{ $owe->part }} MAD</p>
-                                    <form action="{{ route('split.paid') }}" method="post" class="mt-2">
+                                    <form action="{{ route('split.paid') }}" method="post" class="mt-1">
                                         @csrf
                                         @method('PATCH')
                                         <input type="hidden" name="owe_id" value="{{ $owe->id }}">
-                                        <button type="submit" class="rounded-lg border border-cerulean-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-cerulean-700 hover:bg-cerulean-100">Mark as paid</button>
+                                        <button type="submit" class="rounded-lg cursor-pointer   bg-white px-2.5 py-1 text-[11px] font-semibold text-cerulean-700 hover:bg-cerulean-100">Pay Now !</button>
                                     </form>
                                 </div>
                             </div>
@@ -175,93 +331,111 @@
         </div>
     </div>
 
-    <div class="fixed bottom-5 right-5 z-40 rounded-2xl border border-cerulean-200 bg-white/95 px-4 py-2 shadow-lg backdrop-blur">
-        <p class="text-[10px] font-semibold uppercase tracking-[0.14em] text-cerulean-600">My Reputation</p>
-        <p class="text-lg font-semibold text-cerulean-800">{{ $reputation }}</p>
-    </div>
+    <div id="member-dashboard-hover-portal" class="pointer-events-none fixed left-0 top-0 z-[70] hidden w-56 rounded-lg border border-cerulean-200 bg-white p-2 shadow-xl"></div>
 
-    <div id="add-expense-modal" class="fixed hidden inset-0 z-50 items-center justify-center bg-cerulean-900/50 p-4">
-        <div class="w-full max-w-lg rounded-2xl border border-cerulean-200 bg-white p-5 shadow-xl">
-            <div class="flex items-start justify-between gap-3">
-                <div>
-                    <h3 class="text-lg font-semibold text-cerulean-800">Add Expense</h3>
-                    <p class="mt-1 text-xs text-cerulean-600">Create a new expense for the group.</p>
-                </div>
-                <button type="button" data-close-modal class="rounded-lg p-2 text-cerulean-700 hover:bg-cerulean-100">X</button>
-            </div>
+    <x-expenses.form :membership="$membership" :members="$members" :categories="$categories" />
 
-            <form class="mt-4 grid gap-3 sm:grid-cols-2" action="{{ route('expense.add') }}" method="post">
-                @csrf
-                <div class="sm:col-span-2">
-                    <x-form.input
-                        id="expense-title"
-                        name="title"
-                        label="Title"
-                        required
-                    />
-                </div>
+    <script>
+        (() => {
+            const portal = document.getElementById('member-dashboard-hover-portal');
+            if (!portal) {
+                return;
+            }
 
-                <div>
-                    <x-form.input
-                        id="expense-amount"
-                        name="amount"
-                        label="Amount"
-                        type="number"
-                        step="0.01"
-                        required
-                    />
-                </div>
+            let activeTrigger = null;
+            const edgePadding = 8;
+            const offset = 8;
 
-                <div>
-                    <x-form.input
-                        id="expense-date"
-                        name="date"
-                        label="Date"
-                        type="date"
-                        required
-                    />
-                </div>
+            const hidePortal = () => {
+                portal.classList.add('hidden');
+                activeTrigger = null;
+            };
 
-                <div>
-                    <label for="expense-category" class="block text-xs font-medium text-cerulean-800">Category</label>
-                    <select id="expense-category" name="category_id" class="mt-2 block h-11 w-full rounded-xl border border-cerulean-200 bg-white px-3 text-sm text-cerulean-800 outline-none focus:border-cerulean-600">
-                        <option value="">choose a category</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}">
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <x-form.error name="category_id" />
-                </div>
+            const positionPortal = () => {
+                if (!activeTrigger || portal.classList.contains('hidden')) {
+                    return;
+                }
 
-                <div>
-                    <label for="expense-payer" class="block text-xs font-medium text-cerulean-800">Paid By</label>
-                    <select id="expense-payer" name="membership_id" class="mt-2 block h-11 w-full rounded-xl border border-cerulean-200 bg-white px-3 text-sm text-cerulean-800 outline-none focus:border-cerulean-600" required>
-                        <option value="{{ $membership->id }}" @selected((string) old('membership_id', $membership->id) === (string) $membership->id)>Me</option>
-                        @foreach($members as $member)
-                            @if($member->id !== $membership->id)
-                                <option value="{{ $member->id }}" @selected((string) old('membership_id', $membership->id) === (string) $member->id)>{{ $member->user->name }}</option>
-                            @endif
-                        @endforeach
-                    </select>
-                    <x-form.error name="membership_id" />
-                </div>
+                const triggerRect = activeTrigger.getBoundingClientRect();
+                const portalRect = portal.getBoundingClientRect();
 
-                <div class="sm:col-span-2 flex justify-end gap-2 pt-2">
-                    <button type="button" data-close-modal class="rounded-xl border border-cerulean-300 px-4 py-2 text-sm font-semibold text-cerulean-700 hover:bg-cerulean-50">Cancel</button>
-                    <button type="submit" class="rounded-xl bg-cerulean-700 px-4 py-2 text-sm font-semibold text-white hover:bg-cerulean-800">Add Expense</button>
-                </div>
-            </form>
-        </div>
-    </div>
+                let left = triggerRect.right - portalRect.width;
+                left = Math.max(edgePadding, Math.min(left, window.innerWidth - portalRect.width - edgePadding));
+
+                let top = triggerRect.top - portalRect.height - offset;
+                if (top < edgePadding) {
+                    top = triggerRect.bottom + offset;
+                }
+                if (top + portalRect.height > window.innerHeight - edgePadding) {
+                    top = Math.max(edgePadding, window.innerHeight - portalRect.height - edgePadding);
+                }
+
+                portal.style.left = `${left}px`;
+                portal.style.top = `${top}px`;
+            };
+
+            const showPortal = (trigger) => {
+                const template = trigger.parentElement?.querySelector('template[data-member-hover-template]');
+                if (!template) {
+                    return;
+                }
+
+                activeTrigger = trigger;
+                portal.innerHTML = template.innerHTML;
+                portal.classList.remove('hidden');
+                requestAnimationFrame(positionPortal);
+            };
+
+            document.addEventListener('mouseenter', (event) => {
+                const trigger = event.target.closest('[data-member-hover-trigger]');
+                if (!trigger) {
+                    return;
+                }
+                showPortal(trigger);
+            }, true);
+
+            document.addEventListener('mouseleave', (event) => {
+                const trigger = event.target.closest('[data-member-hover-trigger]');
+                if (!trigger || activeTrigger !== trigger) {
+                    return;
+                }
+                hidePortal();
+            }, true);
+
+            document.addEventListener('focusin', (event) => {
+                const trigger = event.target.closest('[data-member-hover-trigger]');
+                if (!trigger) {
+                    return;
+                }
+                showPortal(trigger);
+            });
+
+            document.addEventListener('focusout', (event) => {
+                const trigger = event.target.closest('[data-member-hover-trigger]');
+                if (!trigger || activeTrigger !== trigger) {
+                    return;
+                }
+                hidePortal();
+            });
+
+            window.addEventListener('scroll', positionPortal, true);
+            window.addEventListener('resize', positionPortal);
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    hidePortal();
+                }
+            });
+        })();
+    </script>
 
     <script>
         (() => {
             const body = document.body;
+            const modalSelector = '[id$="-modal"].fixed.inset-0';
             const openers = document.querySelectorAll('[data-open-modal]');
             const closers = document.querySelectorAll('[data-close-modal]');
-            const modals = document.querySelectorAll('[id$="-modal"]');
+            const modals = document.querySelectorAll(modalSelector);
 
             const closeAll = () => {
                 modals.forEach((modal) => {

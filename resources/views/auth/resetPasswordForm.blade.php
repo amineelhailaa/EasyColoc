@@ -1,4 +1,6 @@
-@php($title = 'Reset Password - EasyColoc')
+@php
+    $title = 'Reset Password - EasyColoc';
+@endphp
 
 @extends('layouts.guest')
 

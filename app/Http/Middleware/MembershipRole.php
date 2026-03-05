@@ -16,7 +16,6 @@ class MembershipRole
     public function handle(Request $request, Closure $next , ... $roles): Response
     {
         $user = $request->user();
-
         if(!$user->membership ){ //membership is always active as the relation imade in controller
             return redirect()->route('colocation.create');
         }

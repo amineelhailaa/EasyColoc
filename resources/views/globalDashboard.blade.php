@@ -1,5 +1,10 @@
-@php($title = 'Global Dashboard')
-@php($daysgone = [120, 95, 140, 80, 110, 75, 130, 90, 150, 100, 125, 105, 160, 115])
+@php
+    $title = 'Global Dashboard';
+@endphp
+
+@php
+    $daysgone = [120, 95, 140, 80, 110, 75, 130, 90, 150, 100, 125, 105, 160, 115];
+@endphp
 @extends('layouts.app')
 @section('content')
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -18,36 +23,41 @@
                     <p>MAD</p></div>
             </div>
             <div class="mt-8 rounded-2xl p-4 bg-cerulean-50 shadow">
-            <div id="weeklyExpenseChart" class="h-42.5 p-0" ></div>
+            <div id="weeklyExpenseChart" class="h-40 p-0 sm:h-44"></div>
             <script>
                 let lastDaysMate = @json($daysgone);
-
-                function getEcranSize(){
-
-                    if (window.innerWidth < 768){
-
-                         return lastDaysMate.slice(-7);
-                    } else {
-                        return lastDaysMate;
+                const getVisibleCount = () => {
+                    if (window.innerWidth < 480) return 5;
+                    if (window.innerWidth < 768) return 7;
+                    if (window.innerWidth < 1024) return 10;
+                    return lastDaysMate.length;
+                };
+                const getChartConfig = () => {
+                    if (window.innerWidth < 480) {
+                        return { height: 140, columnWidth: '48%' };
                     }
-                }
-
-
-                window.addEventListener('resize', () => {
-                    chart.updateSeries([{ name: 'Expense', data: getEcranSize() }]);
-                })
+                    if (window.innerWidth < 768) {
+                        return { height: 150, columnWidth: '52%' };
+                    }
+                    if (window.innerWidth < 1024) {
+                        return { height: 160, columnWidth: '54%' };
+                    }
+                    return { height: 170, columnWidth: '55%' };
+                };
+                const getEcranSize = () => lastDaysMate.slice(-getVisibleCount());
+                const chartConfig = getChartConfig();
 
                 const options = {
                     chart: {
                         type: "bar",
-                        height: 170,
+                        height: chartConfig.height,
                         toolbar: { show: false },
                         sparkline: { enabled: true }, // removes axes and padding (dashboard style)
                     },
                     series: [{ name: "Expense", data: getEcranSize() }],
                     plotOptions: {
                         bar: {
-                            columnWidth: "55%",
+                            columnWidth: chartConfig.columnWidth,
                             borderRadius: 4, // rounded bars
                         },
                     },
@@ -61,6 +71,21 @@
 
                 const chart = new ApexCharts(document.querySelector("#weeklyExpenseChart"), options);
                 chart.render();
+
+                let resizeTimer;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(() => {
+                        const nextConfig = getChartConfig();
+                        chart.updateOptions({
+                            chart: { height: nextConfig.height },
+                            plotOptions: {
+                                bar: { columnWidth: nextConfig.columnWidth },
+                            },
+                        }, false, false);
+                        chart.updateSeries([{ name: 'Expense', data: getEcranSize() }]);
+                    }, 120);
+                });
             </script>
             </div>
         </div>
