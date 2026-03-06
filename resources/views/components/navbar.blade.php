@@ -3,7 +3,7 @@
 
         <a href="{{ url('/') }}" class="group flex items-center gap-2.5 outline-none">
             <div class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-cerulean-300 bg-cerulean-50 transition-transform group-hover:scale-105">
-                <img src="{{ asset('storage/avatars/Nass_Split_Logo.png') }}" alt="Nass Split logo" class="h-full w-full object-contain">
+                <img src="{{ asset('images/Nass_Split_Logo.png') }}" alt="Nass Split logo" class="h-full w-full object-contain">
             </div>
             <span class="hidden text-xl font-extrabold tracking-tight text-cerulean-900 md:block">Nass Split</span>
         </a>
