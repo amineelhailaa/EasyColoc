@@ -126,7 +126,7 @@
                                     <form method="POST" action="{{ route('owner.kick', $member['id']) }}" onsubmit="return confirm('Are you sure you want to remove this member?');">
                                         @csrf
                                         @method('DELETE')
-                                        <x-button variant="danger" class="!h-9 !w-auto px-3 text-xs opacity-100 transition md:pointer-events-none md:opacity-0 md:group-hover:pointer-events-auto md:group-hover:opacity-100">
+                                        <x-button variant="danger" class="!h-9 !rounded-md !w-auto px-3 text-xs opacity-100 transition md:pointer-events-none md:opacity-0 md:group-hover:pointer-events-auto md:group-hover:opacity-100">
                                             Kick
                                         </x-button>
                                     </form>

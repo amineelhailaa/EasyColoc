@@ -126,15 +126,12 @@
                     <a href="{{ route('profile.view') }}" class="block rounded-xl px-4 py-3 text-sm font-semibold {{ request()->routeIs('profile.*') ? 'bg-cerulean-700 text-white' : 'text-cerulean-800 hover:bg-cerulean-200' }}">
                         My Profile
                     </a>
-                </div>
-
-                <div class="mt-6 rounded-2xl border border-cerulean-300 bg-cerulean-100 p-3">
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.12em] text-cerulean-600">Quick Links</p>
-                    <div class="mt-2 space-y-1">
-                        <a href="{{ route('profile.view') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-cerulean-800 hover:bg-cerulean-200">Edit Profile</a>
-                        <a href="{{ route('profile.view') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-cerulean-800 hover:bg-cerulean-200">Preferences</a>
-                        <a href="mailto:support@easycoloc.app" class="block rounded-lg px-3 py-2 text-sm font-medium text-cerulean-800 hover:bg-cerulean-200">Help / Support</a>
-                    </div>
+                    <a href="{{ route('profile.view') }}" class="block rounded-xl px-4 py-3 text-sm font-semibold {{ request()->routeIs('profile.*') ? 'bg-cerulean-700 text-white' : 'text-cerulean-800 hover:bg-cerulean-200' }}">
+                        Preferences
+                    </a>
+                    <a href="mailto:support@easycoloc.app" class="block rounded-xl px-4 py-3 text-sm font-semibold text-cerulean-800 hover:bg-cerulean-200">
+                        Help / Support
+                    </a>
                 </div>
 
                 <div class="mt-auto pt-6">
