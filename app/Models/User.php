@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Storage;
+use App\Services\ImageUploadService;
 
 class User extends Authenticatable
 {
@@ -57,8 +57,10 @@ class User extends Authenticatable
 
     public function avatarUrl(?string $name = null, string $background = '0369a1'): string
     {
-        if ($this->avatar && Storage::disk('public')->exists($this->avatar)) {
-            return asset('storage/'.$this->avatar);
+        $url = ImageUploadService::url($this->avatar);
+
+        if ($url) {
+            return $url;
         }
 
         $displayName = trim((string) ($name ?? $this->name ?? 'User'));

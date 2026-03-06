@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ColocationFormRequest;
 use App\Models\Colocation;
+use App\Services\ImageUploadService;
 use Illuminate\Http\Request;
 
 class ColocationController extends Controller
@@ -35,7 +36,7 @@ class ColocationController extends Controller
     {
         $path = null;
         if ($request->hasFile('avatar')) {
-            $path = $request->file('avatar')->store('avatars', 'public');
+            $path = ImageUploadService::upload($request->file('avatar'), 'avatars');
         }
        $colocation =  Colocation::create(['name'=>$request->name,
             'description'=>$request->description,

@@ -1,0 +1,29 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-Bhg22JOk.css",
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "name": "app",
+    "names": [
+      "app.css"
+    ]
+  },
+  "resources/fonts/Blue_Cashews.otf": {
+    "file": "assets/Blue_Cashews-CwlzvxYG.otf",
+    "src": "resources/fonts/Blue_Cashews.otf"
+  },
+  "resources/fonts/Cashmero (Demo_Font).otf": {
+    "file": "assets/Cashmero (Demo_Font)-DnWUPzfo.otf",
+    "src": "resources/fonts/Cashmero (Demo_Font).otf"
+  },
+  "resources/fonts/Heavitas.ttf": {
+    "file": "assets/Heavitas-BE4TTxyk.ttf",
+    "src": "resources/fonts/Heavitas.ttf"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-B4Ak04OE.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  }
+}

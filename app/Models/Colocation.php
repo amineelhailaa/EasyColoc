@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Storage;
+use App\Services\ImageUploadService;
 
 class Colocation extends Model
 {
@@ -41,8 +41,10 @@ class Colocation extends Model
 
     public function avatarUrl(?string $name = null, string $background = '0369a1'): string
     {
-        if ($this->avatar && Storage::disk('public')->exists($this->avatar)) {
-            return asset('storage/'.$this->avatar);
+        $url = ImageUploadService::url($this->avatar);
+
+        if ($url) {
+            return $url;
         }
 
         $displayName = trim((string) ($name ?? $this->name ?? 'Colocation'));

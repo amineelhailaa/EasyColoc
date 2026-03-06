@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PasswordUpdateRequest;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Services\ImageUploadService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 class ProfileController extends Controller
@@ -57,7 +58,9 @@ class ProfileController extends Controller
 //        dd($request);
         $data = ['name' => $request->name, 'email' => $request->email];
         if ($request->hasFile('avatar')) {
-            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');        }
+            ImageUploadService::delete(auth()->user()->avatar);
+            $data['avatar'] = ImageUploadService::upload($request->file('avatar'), 'avatars');
+        }
         auth()->user()->update($data);
         return redirect()->route('profile.view');
     }

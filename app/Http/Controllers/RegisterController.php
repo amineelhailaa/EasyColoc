@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Http\Requests\RegisterFormRequest;
+use App\Services\ImageUploadService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -17,7 +18,7 @@ class RegisterController extends Controller
     public function create(RegisterFormRequest $request){
         $avatarPath = null;
         if ($request->hasFile('avatar')) {
-            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            $avatarPath = ImageUploadService::upload($request->file('avatar'), 'avatars');
         }
 
       $user =  User::create([
