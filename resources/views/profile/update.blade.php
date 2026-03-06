@@ -40,7 +40,7 @@
                 name="avatar"
                 id="profile_avatar"
                 label="Avatar (optional)"
-                :preview-src="auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : ''"
+                :preview-src="auth()->user()->avatarUrl(auth()->user()->name ?? 'User', '0369a1')"
             />
 
             <div class="pt-2">

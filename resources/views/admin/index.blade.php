@@ -9,7 +9,7 @@
         <section class="rounded-3xl border border-cerulean-200 bg-white p-6 shadow-sm md:p-8">
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <img src="{{ $admin->avatar ? asset('storage/' . $admin->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($admin->name ?? 'Admin') . '&background=0369a1&color=ffffff' }}" alt="Admin avatar" class="h-14 w-14 rounded-xl border border-cerulean-200 object-cover">
+                    <img src="{{ $admin->avatarUrl($admin->name ?? 'Admin', '0369a1') }}" alt="Admin avatar" class="h-14 w-14 rounded-xl border border-cerulean-200 object-cover">
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cerulean-500">Administration</p>
                         <h1 class="mt-2 text-3xl font-semibold text-cerulean-800 md:text-4xl">Admin Dashboard</h1>
@@ -64,7 +64,7 @@
                     @forelse($users as $user)
                         <article class="rounded-2xl border border-cerulean-200 bg-cerulean-50 p-3">
                             <div class="flex flex-wrap items-center gap-3">
-                                <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name ?? 'User') . '&background=0f766e&color=ffffff' }}" alt="User avatar" class="h-11 w-11 rounded-xl border border-cerulean-200 object-cover">
+                                <img src="{{ $user->avatarUrl($user->name ?? 'User', '0f766e') }}" alt="User avatar" class="h-11 w-11 rounded-xl border border-cerulean-200 object-cover">
                                 <div class="min-w-0">
                                     <p class="truncate text-sm font-semibold text-cerulean-800">{{ $user->name }}</p>
                                     <p class="truncate text-xs text-cerulean-600">{{ $user->email }}</p>
@@ -109,7 +109,7 @@
                     @forelse($colocations as $group)
                         <article class="rounded-2xl border border-cerulean-200 bg-cerulean-50 p-3">
                             <div class="flex items-center gap-3">
-                                <img src="{{ $group->avatar ? asset('storage/' . $group->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($group->name ?? 'Colocation') . '&background=0369a1&color=ffffff' }}" alt="Colocation avatar" class="h-10 w-10 rounded-xl border border-cerulean-200 object-cover">
+                                <img src="{{ $group->avatarUrl($group->name ?? 'Colocation', '0369a1') }}" alt="Colocation avatar" class="h-10 w-10 rounded-xl border border-cerulean-200 object-cover">
                                 <div class="min-w-0">
                                     <p class="truncate text-sm font-semibold text-cerulean-800">{{ $group->name }}</p>
                                     <p class="truncate text-xs text-cerulean-600">ID: {{ $group->id }}</p>

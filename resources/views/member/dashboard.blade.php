@@ -9,7 +9,7 @@
         <section class="rounded-3xl border border-cerulean-200 bg-white p-6 shadow-sm md:p-8">
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <img src="{{ $colocation->avatar ? asset('storage/' . $colocation->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($colocation->name ?? 'Colocation') . '&background=0369a1&color=ffffff' }}" alt="Colocation logo" class="h-14 w-14 rounded-xl border border-cerulean-200 object-cover">
+                    <img src="{{ $colocation->avatarUrl($colocation->name ?? 'Colocation', '0369a1') }}" alt="Colocation logo" class="h-14 w-14 rounded-xl border border-cerulean-200 object-cover">
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cerulean-500">
                             {{ $colocation->name }}
@@ -82,7 +82,7 @@
                     @forelse($members as $member)
                         <article class="rounded-2xl border border-cerulean-200 bg-cerulean-50 p-3">
                             <div class="flex items-center gap-3">
-                                <img src="{{ $member->user->avatar ? asset('storage/' . $member->user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($member->user->name ?? 'Member') . '&background=0f766e&color=ffffff' }}" alt="Member avatar" class="h-11 w-11 rounded-xl border border-cerulean-200 object-cover">
+                                <img src="{{ $member->user->avatarUrl($member->user->name ?? 'Member', '0f766e') }}" alt="Member avatar" class="h-11 w-11 rounded-xl border border-cerulean-200 object-cover">
                                 <div class="min-w-0">
                                     <p class="truncate text-sm font-semibold text-cerulean-800">{{ $member->user->name }}</p>
                                     <p class="truncate text-xs text-cerulean-600">Role: {{ $member->role }}</p>

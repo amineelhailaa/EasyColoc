@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <div class="md:mx-12">
         <div class="flex gap-2">
-            <div><img class="rounded-4xl" src="{{auth()->user()->avatar ?? 'https://yt3.ggpht.com/f0uZg4v91xpYmJP3AKRjmIlBqh6dLhhFDklUgZ555Y7Bb5oHQY1FdANQmptt2XcugN3yqiwDjw=s48-c-k-c0x00ffffff-no-rj'}}"></div>
+            <div><img class="rounded-4xl" src="{{ auth()->user()->avatarUrl(auth()->user()->name ?? 'User', '0369a1') }}"></div>
             <div>
                 <div class="text-xl font-bold">Hello Jhon Smith</div>
                 <div class=" opacity-70">Welcome Back !</div>

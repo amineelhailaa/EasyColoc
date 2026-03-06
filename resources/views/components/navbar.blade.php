@@ -11,9 +11,7 @@
         <div class="flex items-center gap-3">
             @auth
                 @php
-                    $authAvatar = auth()->user()->avatar
-                        ? asset('storage/' . auth()->user()->avatar)
-                        : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name ?? 'User') . '&background=0369a1&color=ffffff';
+                    $authAvatar = auth()->user()->avatarUrl(auth()->user()->name ?? 'User', '0369a1');
                 @endphp
 
                 @if(auth()->user()->role === 'admin')

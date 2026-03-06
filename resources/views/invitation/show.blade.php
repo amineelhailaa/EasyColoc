@@ -9,7 +9,7 @@
         <x-card class="w-full rounded-3xl p-6 md:p-8">
             <div class="flex flex-col items-center text-center">
                 <img
-                    src="{{ $colocation->avatar ? asset('storage/' . $colocation->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($colocation->name ?? 'Colocation') . '&background=0369a1&color=ffffff' }}"
+                    src="{{ $colocation->avatarUrl($colocation->name ?? 'Colocation', '0369a1') }}"
                     alt="Colocation logo"
                     class="h-24 w-24 rounded-2xl border border-cerulean-200 object-cover"
                 >

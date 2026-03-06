@@ -175,7 +175,7 @@
     <div data-dashboard-scroll-root class="owner-dashboard-font w-full space-y-5 overflow-x-hidden">
         <section class="py-1">
             <div class="flex items-center gap-3">
-                <img src="{{ $colocation->avatar ? asset('storage/' . $colocation->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($colocation->name ?? 'Colocation') . '&background=0369a1&color=ffffff' }}" alt="Colocation logo" class="h-12 w-12 rounded-lg border border-cerulean-200 object-cover">
+                <img src="{{ $colocation->avatarUrl($colocation->name ?? 'Colocation', '0369a1') }}" alt="Colocation logo" class="h-12 w-12 rounded-lg border border-cerulean-200 object-cover">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cerulean-600">{{ $colocation->name ?? $colocation->title }}</p>
                     <p class="mt-1 text-sm text-cerulean-700">Welcome back, <span class="font-bold text-cerulean-900">{{ $authUser->name ?? 'Owner' }}</span></p>

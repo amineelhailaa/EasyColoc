@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Colocation extends Model
 {
@@ -36,5 +37,24 @@ class Colocation extends Model
     public function categories(): HasMany
     {
         return $this->hasMany(Category::class,'colocation_id');
+    }
+
+    public function avatarUrl(?string $name = null, string $background = '0369a1'): string
+    {
+        if ($this->avatar && Storage::disk('public')->exists($this->avatar)) {
+            return asset('storage/'.$this->avatar);
+        }
+
+        $displayName = trim((string) ($name ?? $this->name ?? 'Colocation'));
+
+        if ($displayName === '') {
+            $displayName = 'Colocation';
+        }
+
+        return 'https://ui-avatars.com/api/?name='
+            .urlencode($displayName)
+            .'&background='
+            .$background
+            .'&color=ffffff';
     }
 }

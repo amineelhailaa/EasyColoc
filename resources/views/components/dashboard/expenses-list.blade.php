@@ -36,8 +36,8 @@
         ->map(function ($participant) use ($membership) {
             $user = $participant->user ?? null;
             $name = $participant->id === $membership->id ? 'Me' : ($user?->name ?? 'Member');
-            $avatar = $user?->avatar
-                ? asset('storage/' . $user->avatar)
+            $avatar = $user
+                ? $user->avatarUrl($name, '0369a1')
                 : 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=0369a1&color=ffffff';
 
             return [
@@ -89,8 +89,8 @@
         @forelse($expenses as $expense)
             @php
                 $payerName = $expense->membership?->user?->name ?? 'Payer';
-                $payerAvatar = $expense->membership?->user?->avatar
-                    ? asset('storage/' . $expense->membership->user->avatar)
+                $payerAvatar = $expense->membership?->user
+                    ? $expense->membership->user->avatarUrl($payerName, '0f766e')
                     : 'https://ui-avatars.com/api/?name=' . urlencode($payerName) . '&background=0f766e&color=ffffff';
                 $expenseTitle = $expense->title ?? 'Expense title';
                 $expenseAmount = number_format((float) ($expense->amount ?? 0), 2, '.', '');
@@ -133,8 +133,8 @@
                     @forelse($expenses as $expense)
                         @php
                             $payerName = $expense->membership?->user?->name ?? 'Payer';
-                            $payerAvatar = $expense->membership?->user?->avatar
-                                ? asset('storage/' . $expense->membership->user->avatar)
+                            $payerAvatar = $expense->membership?->user
+                                ? $expense->membership->user->avatarUrl($payerName, '0f766e')
                                 : 'https://ui-avatars.com/api/?name=' . urlencode($payerName) . '&background=0f766e&color=ffffff';
                             $expenseTitle = $expense->title ?? 'Expense title';
                             $expenseCategory = $expense->category?->name ?? 'Category';

@@ -230,8 +230,8 @@
                     @foreach($splitParticipants as $participant)
                         @php
                             $participantName = $participant->id === $membership->id ? 'Me' : ($participant->user->name ?? 'Member');
-                            $participantAvatar = $participant->user->avatar
-                                ? asset('storage/' . $participant->user->avatar)
+                            $participantAvatar = $participant->user
+                                ? $participant->user->avatarUrl($participantName, '0369a1')
                                 : 'https://ui-avatars.com/api/?name=' . urlencode($participantName) . '&background=0369a1&color=ffffff';
                             $percentageValue = (int) old('percentage_entries.' . $participant->id, 0);
                         @endphp

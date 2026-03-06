@@ -30,8 +30,8 @@ class ManagementTabs extends Component
                 'left_at' => $leftAt,
                 'total_paid_expenses' => number_format($totalPaid, 2, '.', ''),
                 'reputation' => $member->user->reputation ?? 0,
-                'avatar' => $member->user->avatar
-                    ? asset('storage/' . $member->user->avatar)
+                'avatar' => $member->user
+                    ? $member->user->avatarUrl($name, '0f766e')
                     : 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=0f766e&color=ffffff',
             ];
         })->values()->all();
