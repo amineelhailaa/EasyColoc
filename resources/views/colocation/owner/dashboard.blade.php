@@ -183,8 +183,7 @@
             </div>
         </section>
 
-        <livewire:owner.management-tabs :members="$members" :categories="$categories" />
-
+        <livewire:simple-tabination :members="$members" :categories="$categories" />
         <div id="global-dashboard-content" class="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
             <div class="space-y-6">
                 <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
